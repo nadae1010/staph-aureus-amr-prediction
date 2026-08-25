@@ -1,0 +1,7 @@
+Antibiotic,Resistant,Susceptible,Not_tested_None,Total_tested,Resistance_ratio
+methicillin,1161,886,2897,2047,0.567
+oxacillin,632,883,3429,1515,0.417
+cefoxitin,1320,776,2848,2096,0.63
+erythromycin,1462,1900,1582,3362,0.435
+ciprofloxacin,1385,1871,1688,3256,0.425
+clindamycin,886,1056,3002,1942,0.456
