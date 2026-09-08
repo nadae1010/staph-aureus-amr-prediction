@@ -28,6 +28,6 @@ python KMX.py \
     -l ~/staph_amr_project/genome_fasta_list_fasta.txt \
     -k 31 \
     -t /blue/boucher/nelseifi/kmx_tmp \
-    -o ~/staph_amr_project/kmx_output \
+    -o /blue/boucher/nelseifi/kmx_output \
     -min 5 \
     -max 3000
