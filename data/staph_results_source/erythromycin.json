@@ -1,0 +1,72 @@
+{
+  "antibiotic": "erythromycin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Disk diffusion|noVendor",
+      "n_test": 211,
+      "test_pct_R": 0.9383886255924171,
+      "n_train": 2814,
+      "accuracy": 0.957345971563981,
+      "precision": 0.9748743718592965,
+      "recall": 0.9797979797979798,
+      "f1": 0.9773299748110831,
+      "auroc": 0.9174436674436675
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 886,
+      "test_pct_R": 0.2200902934537246,
+      "n_train": 2139,
+      "accuracy": 0.9525959367945824,
+      "precision": 0.8591549295774648,
+      "recall": 0.9384615384615385,
+      "f1": 0.8970588235294118,
+      "auroc": 0.9799176221752198
+    },
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 225,
+      "test_pct_R": 0.07555555555555556,
+      "n_train": 2800,
+      "accuracy": 0.9955555555555555,
+      "precision": 1.0,
+      "recall": 0.9411764705882353,
+      "f1": 0.9696969696969697,
+      "auroc": 0.9704468325791855
+    },
+    {
+      "source": "pmid32025709|Disk diffusion|noVendor",
+      "n_test": 643,
+      "test_pct_R": 0.45878693623639194,
+      "n_train": 2382,
+      "accuracy": 0.9315707620528771,
+      "precision": 0.9312714776632303,
+      "recall": 0.9186440677966101,
+      "f1": 0.9249146757679181,
+      "auroc": 0.9650155854276252
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 129,
+      "test_pct_R": 0.6434108527131783,
+      "n_train": 2896,
+      "accuracy": 0.9612403100775194,
+      "precision": 0.9642857142857143,
+      "recall": 0.9759036144578314,
+      "f1": 0.9700598802395209,
+      "auroc": 0.9507595599790466
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 596,
+      "test_pct_R": 0.6644295302013423,
+      "n_train": 2429,
+      "accuracy": 0.5167785234899329,
+      "precision": 0.8253012048192772,
+      "recall": 0.34595959595959597,
+      "f1": 0.4875444839857651,
+      "auroc": 0.7117234848484848
+    }
+  ]
+}

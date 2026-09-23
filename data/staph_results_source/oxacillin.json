@@ -1,0 +1,39 @@
+{
+  "antibiotic": "oxacillin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 226,
+      "test_pct_R": 0.02654867256637168,
+      "n_train": 1137,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 114,
+      "test_pct_R": 0.6754385964912281,
+      "n_train": 1249,
+      "accuracy": 0.9736842105263158,
+      "precision": 0.9868421052631579,
+      "recall": 0.974025974025974,
+      "f1": 0.9803921568627451,
+      "auroc": 0.9873639873639873
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 600,
+      "test_pct_R": 0.57,
+      "n_train": 763,
+      "accuracy": 0.7933333333333333,
+      "precision": 0.9954545454545455,
+      "recall": 0.6403508771929824,
+      "f1": 0.7793594306049823,
+      "auroc": 0.9289405684754524
+    }
+  ]
+}

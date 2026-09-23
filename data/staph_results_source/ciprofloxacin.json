@@ -1,0 +1,72 @@
+{
+  "antibiotic": "ciprofloxacin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Broth dilution|AB Biodisk",
+      "n_test": 210,
+      "test_pct_R": 0.9571428571428572,
+      "n_train": 2723,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 886,
+      "test_pct_R": 0.24943566591422123,
+      "n_train": 2047,
+      "accuracy": 0.9762979683972912,
+      "precision": 0.9807692307692307,
+      "recall": 0.9230769230769231,
+      "f1": 0.951048951048951,
+      "auroc": 0.9691287041132242
+    },
+    {
+      "source": "pmid29295910|Disk diffusion|noVendor",
+      "n_test": 271,
+      "test_pct_R": 0.5608856088560885,
+      "n_train": 2662,
+      "accuracy": 0.977859778597786,
+      "precision": 0.9932432432432432,
+      "recall": 0.9671052631578947,
+      "f1": 0.98,
+      "auroc": 0.9862892525431225
+    },
+    {
+      "source": "pmid32025709|Disk diffusion|noVendor",
+      "n_test": 623,
+      "test_pct_R": 0.5955056179775281,
+      "n_train": 2310,
+      "accuracy": 0.9582664526484751,
+      "precision": 1.0,
+      "recall": 0.9299191374663073,
+      "f1": 0.9636871508379888,
+      "auroc": 0.9806828391734052
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 128,
+      "test_pct_R": 0.6484375,
+      "n_train": 2805,
+      "accuracy": 0.9921875,
+      "precision": 0.9880952380952381,
+      "recall": 1.0,
+      "f1": 0.9940119760479041,
+      "auroc": 0.9855421686746988
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 555,
+      "test_pct_R": 0.23063063063063063,
+      "n_train": 2378,
+      "accuracy": 0.8648648648648649,
+      "precision": 0.6934306569343066,
+      "recall": 0.7421875,
+      "f1": 0.7169811320754716,
+      "auroc": 0.8177510245901639
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "antibiotic": "cefoxitin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 226,
+      "test_pct_R": 0.02654867256637168,
+      "n_train": 1658,
+      "accuracy": 0.9734513274336283,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "auroc": 1.0
+    },
+    {
+      "source": "pmid32025709|Disk diffusion|noVendor",
+      "n_test": 694,
+      "test_pct_R": 1.0,
+      "n_train": 1190,
+      "accuracy": 0.4452449567723343,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 138,
+      "test_pct_R": 0.15217391304347827,
+      "n_train": 1746,
+      "accuracy": 0.6304347826086957,
+      "precision": 0.1875,
+      "recall": 0.42857142857142855,
+      "f1": 0.2608695652173913,
+      "auroc": 0.6493691493691494
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 599,
+      "test_pct_R": 0.5792988313856428,
+      "n_train": 1285,
+      "accuracy": 0.9298831385642737,
+      "precision": 1.0,
+      "recall": 0.8789625360230547,
+      "f1": 0.9355828220858896,
+      "auroc": 0.9348897580165592
+    }
+  ]
+}

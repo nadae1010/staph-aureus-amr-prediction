@@ -1,0 +1,61 @@
+{
+  "antibiotic": "clindamycin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Disk diffusion|noVendor",
+      "n_test": 211,
+      "test_pct_R": 0.9383886255924171,
+      "n_train": 1537,
+      "accuracy": 0.9383886255924171,
+      "precision": 0.9425837320574163,
+      "recall": 0.9949494949494949,
+      "f1": 0.9680589680589681,
+      "auroc": 0.8045843045843046
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 275,
+      "test_pct_R": 0.37454545454545457,
+      "n_train": 1473,
+      "accuracy": 0.8727272727272727,
+      "precision": 0.8148148148148148,
+      "recall": 0.8543689320388349,
+      "f1": 0.8341232227488151,
+      "auroc": 0.9332524271844661
+    },
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 225,
+      "test_pct_R": 0.07111111111111111,
+      "n_train": 1523,
+      "accuracy": 0.8888888888888888,
+      "precision": 0.32,
+      "recall": 0.5,
+      "f1": 0.3902439024390244,
+      "auroc": 0.71247009569378
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 127,
+      "test_pct_R": 0.5118110236220472,
+      "n_train": 1621,
+      "accuracy": 0.8740157480314961,
+      "precision": 0.810126582278481,
+      "recall": 0.9846153846153847,
+      "f1": 0.8888888888888888,
+      "auroc": 0.9317617866004964
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 594,
+      "test_pct_R": 0.5572390572390572,
+      "n_train": 1154,
+      "accuracy": 0.5572390572390572,
+      "precision": 0.8953488372093024,
+      "recall": 0.2326283987915408,
+      "f1": 0.36930455635491605,
+      "auroc": 0.736660425258176
+    }
+  ]
+}
