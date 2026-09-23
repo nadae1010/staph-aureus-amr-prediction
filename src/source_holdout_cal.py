@@ -8,6 +8,12 @@ final scoring. Reports metrics at both 0.5 and the calibrated threshold.
 
 Usage:  python3 source_holdout_cal.py <antibiotic> [top_k=10000] [min_test=100]
 Output: /blue/boucher/nelseifi/results_source_cal/<abx>.json
+
+RESULT: calibration did not help. Mean F1 fell for 4 of 6 antibiotics
+(clindamycin 0.776->0.654, methicillin 0.765->0.714). A threshold tuned on
+other studies does not transfer to a study with different resistance
+prevalence. Kept as a documented negative result; AUROC/AUPRC are the
+appropriate cross-study metrics.
 """
 import json, os, sys
 import numpy as np
