@@ -1,0 +1,66 @@
+{
+  "antibiotic": "clindamycin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Disk diffusion|noVendor",
+      "n_test": 211,
+      "test_pct_R": 0.9383886255924171,
+      "threshold": 0.10999999999999999,
+      "f1_at_half": 0.9554455445544554,
+      "f1_cal": 0.9682151589242054,
+      "precision_cal": 0.9383886255924171,
+      "recall_cal": 1.0,
+      "auroc": 0.803030303030303,
+      "acc_cal": 0.9383886255924171
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 275,
+      "test_pct_R": 0.37454545454545457,
+      "threshold": 0.08,
+      "f1_at_half": 0.897196261682243,
+      "f1_cal": 0.7804878048780488,
+      "precision_cal": 0.6713286713286714,
+      "recall_cal": 0.9320388349514563,
+      "auroc": 0.9518514337322195,
+      "acc_cal": 0.8036363636363636
+    },
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 225,
+      "test_pct_R": 0.07111111111111111,
+      "threshold": 0.05,
+      "f1_at_half": 0.5833333333333334,
+      "f1_cal": 0.13852813852813853,
+      "precision_cal": 0.07441860465116279,
+      "recall_cal": 1.0,
+      "auroc": 0.7200956937799043,
+      "acc_cal": 0.11555555555555555
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 127,
+      "test_pct_R": 0.5118110236220472,
+      "threshold": 0.14999999999999997,
+      "f1_at_half": 0.8266666666666667,
+      "f1_cal": 0.7590361445783133,
+      "precision_cal": 0.6237623762376238,
+      "recall_cal": 0.9692307692307692,
+      "auroc": 0.8668734491315137,
+      "acc_cal": 0.6850393700787402
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 594,
+      "test_pct_R": 0.5572390572390572,
+      "threshold": 0.4799999999999999,
+      "f1_at_half": 0.6150870406189555,
+      "f1_cal": 0.6218809980806143,
+      "precision_cal": 0.8526315789473684,
+      "recall_cal": 0.48942598187311176,
+      "auroc": 0.6634406625848622,
+      "acc_cal": 0.6683501683501684
+    }
+  ]
+}

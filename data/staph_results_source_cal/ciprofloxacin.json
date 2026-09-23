@@ -1,0 +1,78 @@
+{
+  "antibiotic": "ciprofloxacin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Broth dilution|AB Biodisk",
+      "n_test": 210,
+      "test_pct_R": 0.9571428571428572,
+      "threshold": 0.19,
+      "f1_at_half": 0.9975062344139651,
+      "f1_cal": 1.0,
+      "precision_cal": 1.0,
+      "recall_cal": 1.0,
+      "auroc": 1.0,
+      "acc_cal": 1.0
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 886,
+      "test_pct_R": 0.24943566591422123,
+      "threshold": 0.25999999999999995,
+      "f1_at_half": 0.9651972157772621,
+      "f1_cal": 0.9675925925925926,
+      "precision_cal": 0.990521327014218,
+      "recall_cal": 0.9457013574660633,
+      "auroc": 0.9654679685639438,
+      "acc_cal": 0.9841986455981941
+    },
+    {
+      "source": "pmid29295910|Disk diffusion|noVendor",
+      "n_test": 271,
+      "test_pct_R": 0.5608856088560885,
+      "threshold": 0.13999999999999999,
+      "f1_at_half": 0.9900990099009901,
+      "f1_cal": 0.9868421052631579,
+      "precision_cal": 0.9868421052631579,
+      "recall_cal": 0.9868421052631579,
+      "auroc": 0.9951348960636887,
+      "acc_cal": 0.985239852398524
+    },
+    {
+      "source": "pmid32025709|Disk diffusion|noVendor",
+      "n_test": 623,
+      "test_pct_R": 0.5955056179775281,
+      "threshold": 0.25999999999999995,
+      "f1_at_half": 0.9024390243902439,
+      "f1_cal": 0.9232804232804233,
+      "precision_cal": 0.9064935064935065,
+      "recall_cal": 0.9407008086253369,
+      "auroc": 0.9771852137081247,
+      "acc_cal": 0.9069020866773676
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 128,
+      "test_pct_R": 0.6484375,
+      "threshold": 0.43999999999999995,
+      "f1_at_half": 0.9764705882352941,
+      "f1_cal": 0.9764705882352941,
+      "precision_cal": 0.9540229885057471,
+      "recall_cal": 1.0,
+      "auroc": 0.9867469879518073,
+      "acc_cal": 0.96875
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 555,
+      "test_pct_R": 0.23063063063063063,
+      "threshold": 0.12,
+      "f1_at_half": 0.7181467181467182,
+      "f1_cal": 0.7230769230769231,
+      "precision_cal": 0.7121212121212122,
+      "recall_cal": 0.734375,
+      "auroc": 0.8444818501170962,
+      "acc_cal": 0.8702702702702703
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "antibiotic": "erythromycin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid25903077|Disk diffusion|noVendor",
+      "n_test": 211,
+      "test_pct_R": 0.9383886255924171,
+      "threshold": 0.9099999999999999,
+      "f1_at_half": 0.9616368286445013,
+      "f1_cal": 0.9536082474226805,
+      "precision_cal": 0.9736842105263158,
+      "recall_cal": 0.9343434343434344,
+      "auroc": 0.8749028749028749,
+      "acc_cal": 0.9146919431279621
+    },
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 886,
+      "test_pct_R": 0.2200902934537246,
+      "threshold": 0.5399999999999999,
+      "f1_at_half": 0.68125,
+      "f1_cal": 0.6833855799373041,
+      "precision_cal": 0.8790322580645161,
+      "recall_cal": 0.558974358974359,
+      "auroc": 0.9053619800363648,
+      "acc_cal": 0.8860045146726863
+    },
+    {
+      "source": "pmid26806258|noMethod|noVendor",
+      "n_test": 225,
+      "test_pct_R": 0.07555555555555556,
+      "threshold": 0.5099999999999999,
+      "f1_at_half": 0.75,
+      "f1_cal": 0.7894736842105263,
+      "precision_cal": 0.7142857142857143,
+      "recall_cal": 0.8823529411764706,
+      "auroc": 0.9350961538461539,
+      "acc_cal": 0.9644444444444444
+    },
+    {
+      "source": "pmid32025709|Disk diffusion|noVendor",
+      "n_test": 643,
+      "test_pct_R": 0.45878693623639194,
+      "threshold": 0.84,
+      "f1_at_half": 0.5300462249614792,
+      "f1_cal": 0.25069637883008355,
+      "precision_cal": 0.703125,
+      "recall_cal": 0.15254237288135594,
+      "auroc": 0.6069403857393338,
+      "acc_cal": 0.5816485225505443
+    },
+    {
+      "source": "pmid33658988|Broth dilution|noVendor",
+      "n_test": 129,
+      "test_pct_R": 0.6434108527131783,
+      "threshold": 0.84,
+      "f1_at_half": 0.963855421686747,
+      "f1_cal": 0.9316770186335404,
+      "precision_cal": 0.9615384615384616,
+      "recall_cal": 0.9036144578313253,
+      "auroc": 0.9477475117862755,
+      "acc_cal": 0.9147286821705426
+    },
+    {
+      "source": "pmid34100643|Biofosun Gram-positive panels broth dilution|Shanghai Biofosun Biotech, China",
+      "n_test": 596,
+      "test_pct_R": 0.6644295302013423,
+      "threshold": 0.05,
+      "f1_at_half": 0.6339144215530903,
+      "f1_cal": 0.7629427792915532,
+      "precision_cal": 0.8284023668639053,
+      "recall_cal": 0.7070707070707071,
+      "auroc": 0.7345517676767678,
+      "acc_cal": 0.7080536912751678
+    }
+  ]
+}

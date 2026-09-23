@@ -1,0 +1,42 @@
+{
+  "antibiotic": "methicillin",
+  "top_k": 10000,
+  "holdouts": [
+    {
+      "source": "pmid26686880|noMethod|noVendor",
+      "n_test": 886,
+      "test_pct_R": 0.22234762979683972,
+      "threshold": 0.3499999999999999,
+      "f1_at_half": 0.5384615384615384,
+      "f1_cal": 0.4353591160220994,
+      "precision_cal": 0.2782485875706215,
+      "recall_cal": 1.0,
+      "auroc": 0.9925699719301865,
+      "acc_cal": 0.42325056433408575
+    },
+    {
+      "source": "pmid30696529|Broth dilution|BioMerieux",
+      "n_test": 380,
+      "test_pct_R": 1.0,
+      "threshold": 0.05,
+      "f1_at_half": null,
+      "f1_cal": null,
+      "precision_cal": null,
+      "recall_cal": null,
+      "auroc": null,
+      "acc_cal": 0.9947368421052631
+    },
+    {
+      "source": "pmidNA|noMethod|noVendor",
+      "n_test": 607,
+      "test_pct_R": 0.8105436573311368,
+      "threshold": 0.4699999999999999,
+      "f1_at_half": 0.9918200408997955,
+      "f1_cal": 0.9918200408997955,
+      "precision_cal": 0.9979423868312757,
+      "recall_cal": 0.9857723577235772,
+      "auroc": 0.9895722870272182,
+      "acc_cal": 0.9868204283360791
+    }
+  ]
+}
