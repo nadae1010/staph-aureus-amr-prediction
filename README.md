@@ -2,17 +2,15 @@
 
 ## Project overview
 
-This project develops a machine-learning pipeline for predicting antimicrobial resistance (AMR) in *Staphylococcus aureus* using genomic sequences and laboratory-based phenotype data from the Bacterial and Viral Bioinformatics Resource Center (BV-BRC).
+This project develops a machine-learning pipeline for predicting antimicrobial resistance (AMR) in *Staphylococcus aureus* using genomic sequences and laboratory-based phenotype data from the Bacterial and Viral Bioinformatics Resource Center (BV-BRC). It adapts the AURA framework (Serajian et al.), originally developed for *Mycobacterium tuberculosis*, to a new organism.
 
-The project is being completed as part of a master’s thesis under the supervision of Dr. Christina Boucher at the University of Florida.
+The project is being completed as part of a master's thesis under the supervision of Dr. Christina Boucher at the University of Florida.
 
 ## Research objective
 
-The goal is to train and evaluate models that predict whether a *Staphylococcus aureus* genome is resistant or susceptible to individual antibiotics. The project will also examine model generalizability, phenotype-label consistency, class imbalance, interpretability, and prevention of data leakage.
+The goal is to train and evaluate models that predict whether a *Staphylococcus aureus* genome is resistant or susceptible to individual antibiotics. The project also examines model generalizability, phenotype-label consistency, class imbalance, interpretability, and prevention of data leakage.
 
 ## Data-selection criteria
-
-The dataset was prepared using the following criteria:
 
 * Organism: *Staphylococcus aureus* only
 * Source: BV-BRC
@@ -25,55 +23,63 @@ The dataset was prepared using the following criteria:
 
 ## Phenotype dataset
 
-The cleaned phenotype matrix contains one row per genome and uses the following structure:
+The cleaned phenotype matrix contains one row per genome:
 
-1. `genome_id`
-2. `genome_name`
-3. `strain_name`
-4. One phenotype column per antibiotic
+1. `Genome ID`
+2. `Genome Name`
+3. `Strain Name`
+4. One phenotype column per antibiotic (`Resistant`, `Susceptible`, or `None`)
 
-Phenotype values are standardized as:
+4,944 unique genomes met the phenotype criteria. Of these, **4,610 genome assemblies were successfully retrieved**; 334 could not be recovered from BV-BRC and are listed in `data/missing_ids.txt`. All modeling uses the 4,610 available genomes.
 
-* `Resistant`
-* `Susceptible`
-* `None` — antibiotic not tested for that genome
+Per-antibiotic counts on the modeled set:
 
-The cleaned dataset currently contains approximately **4,944 unique genomes**.
+| Antibiotic | Resistant | Susceptible | Tested | Resistance ratio |
+|---|---|---|---|---|
+| methicillin | 1,100 | 804 | 1,904 | 57.8% |
+| cefoxitin | 1,229 | 730 | 1,959 | 62.7% |
+| erythromycin | 1,359 | 1,728 | 3,087 | 44.0% |
+| ciprofloxacin | 1,292 | 1,725 | 3,017 | 42.8% |
+| clindamycin | 830 | 977 | 1,807 | 45.9% |
+| oxacillin | 602 | 833 | 1,435 | 42.0% |
 
-Examples of the most frequently reported antibiotics include:
-
-* Methicillin: 2,047 tested genomes; approximately 56.7% resistant
-* Cefoxitin: 2,096 tested genomes; approximately 63.0% resistant
-
-Additional antibiotic-level statistics will be maintained with the processed dataset.
+Oxacillin fell below the 1,500-tested threshold after the download losses; retained on advisor's decision as a minor decrease.
 
 ## Genome sequence data
 
-Genome IDs from the cleaned phenotype matrix were used to request corresponding nucleotide FASTA files from BV-BRC. Genome files use the `.fna` extension.
+Genome IDs from the cleaned phenotype matrix were used to request nucleotide FASTA files from BV-BRC, downloaded on HiPerGator using the BV-BRC Browser Tools. Genome files use the `.fna` extension; note that gerbil (inside KMX) rejects that extension, so `.fasta` symlinks were created.
 
-Genome downloads were performed on the University of Florida HiPerGator system using the BV-BRC Browser Tools.
+Large `.fna` files and the feature matrix remain on HiPerGator and are not committed here. This repository contains genome ID lists, processing and modeling code, documentation, summary statistics, and small tabular results.
 
-Large `.fna` files should remain on HiPerGator and should not be committed directly to GitHub. This repository should contain the genome ID list, download scripts, processing code, documentation, summary statistics, and small tabular files needed to reproduce the workflow.
+## Feature matrix
 
-## Planned repository structure
+Built with KMX (github.com/M-Serajian/KMX): **4,610 genomes × 11,351,471 k-mers**, k=31, min=5, max=3000, 90.6% sparse, stored as CSR on HiPerGator at `/blue/boucher/nelseifi/kmx_output/`. Chi-square ranking uses presence/absence rather than raw counts, so that multi-copy repetitive k-mers do not dominate the ranking.
+
+## Repository structure
 
 ```text
 staph-aureus-amr-prediction/
 ├── README.md
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── genome_ids/
-├── scripts/
-│   ├── phenotype_processing/
-│   ├── genome_download/
-│   └── machine_learning/
-├── results/
-│   ├── dataset_statistics/
-│   ├── model_performance/
-│   └── figures/
-├── docs/
-└── requirements.txt
+├── data/                       # phenotype tables, ID lists, results JSONs
+│   ├── FINAL_staph_aureus_AMR_phenotypes.csv
+│   ├── FILTERED_staph_aureus_AMR_phenotypes.csv
+│   ├── phenotypes_matrix_aligned.csv
+│   ├── genome_sources.csv
+│   ├── missing_ids.txt
+│   ├── staph_results/          # random-split model results
+│   └── staph_results_source/   # held-out-study results
+└── src/
+    ├── clean_amr.py            # phenotype cleaning
+    ├── make_one_final_csv.py   # wide phenotype matrix
+    ├── make_amr_stats.py       # summary statistics
+    ├── run_kmx.sh              # k-mer matrix (GPU Slurm job)
+    ├── make_splits.py          # leakage-controlled splits
+    ├── chi2_rank.py            # chi-square feature ranking
+    ├── train_pilot.py          # XGBoost training and evaluation
+    ├── model_compare.py        # five-model comparison
+    ├── kmer_interpret.py       # top-feature extraction
+    ├── source_holdout.py       # cross-study evaluation
+    └── source_holdout_cal.py   # threshold-calibrated variant
 ```
 
 ## Data-processing workflow
@@ -83,59 +89,100 @@ staph-aureus-amr-prediction/
 3. Filter records to *Staphylococcus aureus*.
 4. Retain laboratory-based phenotype evidence only.
 5. Standardize phenotype labels.
-6. Reshape the data into one row per genome.
-7. Create one phenotype column per antibiotic.
-8. Assign `None` where an antibiotic was not tested.
-9. Calculate resistant, susceptible, and untested counts for each antibiotic.
-10. Select antibiotics meeting the sample-size and resistance-ratio criteria.
-11. Create a text file containing the selected genome IDs.
-12. Download the corresponding `.fna` genome sequences on HiPerGator.
+6. Reshape into one row per genome, one column per antibiotic.
+7. Assign `None` where an antibiotic was not tested.
+8. Calculate resistant, susceptible, and untested counts per antibiotic.
+9. Select antibiotics meeting the sample-size and resistance-ratio criteria.
+10. Download the corresponding `.fna` genome sequences on HiPerGator.
+11. Build the k-mer feature matrix with KMX.
+12. Align phenotype rows to matrix row order (`phenotypes_matrix_aligned.csv`).
 13. Create training, validation, and test partitions without genome or strain leakage.
-14. Train and evaluate antibiotic-specific prediction models.
+14. Rank features by chi-square on training rows only.
+15. Train and evaluate antibiotic-specific prediction models.
 
 ## Data-leakage prevention
 
-Training, validation, and test sets must be separated at the genome level. Records representing the same genome must never appear in multiple partitions. Strain-level grouping will also be evaluated so that closely related or repeated strain records do not create an artificially optimistic estimate of model performance.
+Training, validation, and test sets are separated at the genome level; records representing the same genome never appear in multiple partitions. Splits are grouped by strain name so that repeated strain records stay within one partition, and each split is verified by assertion before use. All preprocessing — including chi-square feature selection — is fitted on training data only and applied unchanged to validation and test sets.
 
-All preprocessing decisions must be fitted using training data only and then applied unchanged to the validation and test sets.
+Partitions are 70/10/20, repeated over five fixed seeds (0–4), with class counts recorded for every split.
 
 ## Model evaluation
 
-Models will be assessed using metrics appropriate for potentially imbalanced phenotype data, including:
+Models are assessed with accuracy, precision, recall, F1, ROC-AUC, precision–recall AUC, confusion matrices, and class-specific performance, reported as mean ± standard deviation across the five seeds.
 
-* Accuracy
-* Precision
-* Recall
-* F1 score
-* ROC-AUC
-* Precision–recall AUC
-* Confusion matrix
-* Class-specific performance
+## Results
 
-External or temporally separated validation will be considered where the available data permit it.
+### Predictive performance
+
+XGBoost, top 10,000 k-mers, mean over 5 seeds:
+
+| Antibiotic | F1 | AUROC | AUPRC |
+|---|---|---|---|
+| methicillin | 0.994 | 0.997 | 0.998 |
+| cefoxitin | 0.956 | 0.989 | 0.994 |
+| ciprofloxacin | 0.944 | 0.971 | 0.961 |
+| oxacillin | 0.895 | 0.948 | 0.940 |
+| erythromycin | 0.888 | 0.931 | 0.910 |
+| clindamycin | 0.824 | 0.892 | 0.876 |
+
+### Model comparison
+
+Across all six antibiotics, LASSO logistic regression, linear SVM, random forest, and XGBoost perform within ~1 point of one another; naive Bayes is substantially worse on ciprofloxacin (F1 0.578 vs 0.945). LASSO matches XGBoost while training ~10× faster and offering directly interpretable coefficients.
+
+### Mechanism recovery
+
+Top-ranked features map to known resistance determinants without supervision:
+
+* **cefoxitin** — 29 of the top 50 k-mers fall inside *mecA*, present in 94.7% of resistant and 15.1% of susceptible genomes
+* **ciprofloxacin** — top k-mers encode *gyrA* S84L and *grlA* S80F, the canonical quinolone-resistance point mutations
+
+### Feature-count requirements track resistance architecture
+
+AUROC as a function of the number of chi-square-selected k-mers:
+
+| Antibiotic | 1k | 5k | 10k | 50k | 200k | 500k |
+|---|---|---|---|---|---|---|
+| methicillin | 0.995 | 0.996 | 0.997 | 0.999 | — | — |
+| cefoxitin | 0.981 | 0.987 | 0.989 | 0.989 | — | — |
+| ciprofloxacin | 0.967 | 0.969 | 0.970 | 0.972 | — | — |
+| oxacillin | 0.916 | 0.933 | 0.948 | 0.954 | — | — |
+| erythromycin | 0.730 | 0.922 | 0.931 | 0.964 | — | — |
+| clindamycin | 0.826 | 0.887 | 0.892 | 0.919 | 0.942 | 0.944 |
+
+Single-determinant mechanisms saturate by ~1,000 features. The MLSb antibiotics (erythromycin, clindamycin) require roughly 50× more, consistent with resistance distributed across multiple *erm* genes rather than one determinant. Clindamycin plateaus near 200,000.
+
+### Cross-study generalization
+
+Phenotypes derive from ~15 source studies with sharply differing resistance prevalence; source study alone predicts the label at 72–85% accuracy. Held-out-study evaluation shows discrimination largely survives (AUROC 0.82–0.99), but decision thresholds do not transfer. Calibrating thresholds on other training studies did not help and degraded F1 for four of six antibiotics (`source_holdout_cal.py`, documented negative result). AUROC and AUPRC are the appropriate cross-study metrics.
 
 ## Reproducibility notes
 
-* Raw data should not be modified manually.
-* Processed datasets should be generated through version-controlled scripts.
-* Random seeds and software dependencies should be recorded.
-* Dataset versions and download dates should be documented.
-* Large genomic files and sensitive or restricted data must not be committed.
-* Intermediate and generated files should be excluded through `.gitignore`.
+* Raw data is not modified manually.
+* Processed datasets are generated through version-controlled scripts.
+* Random seeds (0–4) and software dependencies are recorded.
+* Dataset versions and download dates are documented.
+* Large genomic files and the feature matrix are not committed.
+* Intermediate and generated files are excluded through `.gitignore`.
 
 ## Current status
 
-* BV-BRC phenotype data downloaded
-* *Staphylococcus aureus* records filtered
-* Laboratory-based phenotype evidence retained
-* Machine-learning-ready phenotype matrix created
-* Approximately 4,944 genome IDs identified
-* Genome sequence download initiated on HiPerGator
-* Dataset documentation and repository organization in progress
-* Machine-learning experiments not yet finalized
+* Phenotype processing, genome retrieval, and feature-matrix construction complete
+* Leakage-controlled splits and chi-square feature selection complete
+* Six antibiotic-specific models trained and evaluated across five classifiers
+* Known resistance mechanisms recovered and verified (*mecA*, *gyrA*, *grlA*)
+* Feature-count sensitivity and cross-study robustness analyses complete
+* Remaining: lineage-aware (MLST) split evaluation, characterization of high-ranking
+  features not matching known determinants, possible expansion to additional
+  antibiotics, external validation
+
+## Limitations
+
+* Methicillin phenotypes carry no MIC values and no recorded typing method for 78% of rows; performance should be read with that provenance in mind.
+* Splits are grouped by strain name only; lineage-aware grouping has not yet been tested, so clonal structure may still inflate random-split estimates.
+* External validation on an independent database or time period has not yet been performed.
 
 ## Contributors
 
 * Nada Elseifi — Graduate researcher
 * Dr. Christina Boucher — Thesis advisor
-* Ali — Research collaborator
+* Ali (Mohammadali Serajian) — Research collaborator
