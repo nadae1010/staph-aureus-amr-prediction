@@ -151,6 +151,41 @@ AUROC as a function of the number of chi-square-selected k-mers:
 
 Single-determinant mechanisms saturate by ~1,000 features. The MLSb antibiotics (erythromycin, clindamycin) require roughly 50× more, consistent with resistance distributed across multiple *erm* genes rather than one determinant. Clindamycin plateaus near 200,000.
 
+### Lineage-grouped evaluation
+
+Strain-name grouping affects only 19 genomes, so splits were rebuilt using
+k-mer similarity clusters as a lineage proxy (394 clusters at Jaccard distance
+0.10; `lineage_cluster.py`). Under lineage grouping, near-identical isolates
+cannot span train and test.
+
+AUROC, strain-grouped (70/10/20, early stopping) vs lineage-grouped (80/20,
+fixed trees):
+
+| Antibiotic | Strain @10k | Lineage @10k | Lineage @50k | Lineage @200k |
+|---|---|---|---|---|
+| cefoxitin | 0.989 | 0.985 | — | — |
+| methicillin* | 0.997 | 0.981 | — | — |
+| ciprofloxacin | 0.971 | 0.949 | — | — |
+| oxacillin | 0.948 | 0.883 | — | — |
+| erythromycin | 0.931 | 0.907 | 0.954 | 0.963 |
+| clindamycin | 0.892 | 0.755 | 0.857 | 0.851 |
+
+\* methicillin lineage splits are degenerate: one 460-genome cluster forces
+test sets that are 87–95% resistant in every seed, so its five seeds are not
+independent replicates.
+
+Two effects separate out. First, an insufficient feature budget can masquerade
+as lineage sensitivity: at 10,000 features the MLSb antibiotics appear to
+depend on population structure, but erythromycin fully recovers at 50,000
+(0.954) and exceeds its strain-grouped score at 200,000 (0.963), with seed
+variance falling from ±0.054 to ±0.014. Second, clindamycin retains a residual
+lineage effect after the feature budget is corrected (0.857 at 50k, plateauing,
+versus 0.892 strain-grouped, seed sd ±0.071), consistent with inducible MLSb
+resistance where *erm* presence does not fully determine phenotype.
+
+Practical consequence: feature counts should be set per antibiotic, with ~50,000
+as a floor for MLSb drugs rather than a single global value.
+
 ### Cross-study generalization
 
 Phenotypes derive from ~15 source studies with sharply differing resistance prevalence; source study alone predicts the label at 72–85% accuracy. Held-out-study evaluation shows discrimination largely survives (AUROC 0.82–0.99), but decision thresholds do not transfer. Calibrating thresholds on other training studies did not help and degraded F1 for four of six antibiotics (`source_holdout_cal.py`, documented negative result). AUROC and AUPRC are the appropriate cross-study metrics.
