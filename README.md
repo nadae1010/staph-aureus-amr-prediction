@@ -60,26 +60,33 @@ Built with KMX (github.com/M-Serajian/KMX): **4,610 genomes × 11,351,471 k-mers
 ```text
 staph-aureus-amr-prediction/
 ├── README.md
-├── data/                       # phenotype tables, ID lists, results JSONs
+├── data/                          # phenotype tables, ID lists, results JSONs
 │   ├── FINAL_staph_aureus_AMR_phenotypes.csv
 │   ├── FILTERED_staph_aureus_AMR_phenotypes.csv
 │   ├── phenotypes_matrix_aligned.csv
-│   ├── genome_sources.csv
+│   ├── genome_sources.csv         # genome -> source study mapping
+│   ├── lineage_clusters.csv       # genome -> k-mer similarity cluster
 │   ├── missing_ids.txt
-│   ├── staph_results/          # random-split model results
-│   └── staph_results_source/   # held-out-study results
+│   ├── staph_results/             # random-split results, all feature counts
+│   ├── staph_results_source/      # held-out-study results
+│   ├── staph_results_source_cal/  # threshold-calibrated variant
+│   ├── staph_results_models/      # five-model comparison
+│   └── staph_results_lineage/     # lineage-grouped results
 └── src/
-    ├── clean_amr.py            # phenotype cleaning
-    ├── make_one_final_csv.py   # wide phenotype matrix
-    ├── make_amr_stats.py       # summary statistics
-    ├── run_kmx.sh              # k-mer matrix (GPU Slurm job)
-    ├── make_splits.py          # leakage-controlled splits
-    ├── chi2_rank.py            # chi-square feature ranking
-    ├── train_pilot.py          # XGBoost training and evaluation
-    ├── model_compare.py        # five-model comparison
-    ├── kmer_interpret.py       # top-feature extraction
-    ├── source_holdout.py       # cross-study evaluation
-    └── source_holdout_cal.py   # threshold-calibrated variant
+    ├── clean_amr.py               # phenotype cleaning
+    ├── make_one_final_csv.py      # wide phenotype matrix
+    ├── make_amr_stats.py          # summary statistics
+    ├── run_kmx.sh                 # k-mer matrix (GPU Slurm job)
+    ├── make_splits.py             # strain-grouped 70/10/20 splits
+    ├── chi2_rank.py               # chi-square feature ranking
+    ├── train_pilot.py             # XGBoost training and evaluation
+    ├── model_compare.py           # five-model comparison
+    ├── kmer_interpret.py          # top-feature extraction
+    ├── source_holdout.py          # cross-study evaluation
+    ├── source_holdout_cal.py      # threshold-calibrated variant
+    ├── lineage_cluster.py         # k-mer similarity clustering
+    ├── make_splits_lineage.py     # lineage-grouped 80/20 splits
+    └── train_lineage.py           # training on lineage-grouped splits
 ```
 
 ## Data-processing workflow
@@ -104,7 +111,7 @@ staph-aureus-amr-prediction/
 
 Training, validation, and test sets are separated at the genome level; records representing the same genome never appear in multiple partitions. Splits are grouped by strain name so that repeated strain records stay within one partition, and each split is verified by assertion before use. All preprocessing — including chi-square feature selection — is fitted on training data only and applied unchanged to validation and test sets.
 
-Partitions are 70/10/20, repeated over five fixed seeds (0–4), with class counts recorded for every split.
+Partitions are 70/10/20, repeated over five fixed seeds (0–4), with class counts recorded for every split. A second, stricter split design groups genomes by k-mer similarity cluster (see *Lineage-grouped evaluation* below).
 
 ## Model evaluation
 
@@ -153,13 +160,9 @@ Single-determinant mechanisms saturate by ~1,000 features. The MLSb antibiotics 
 
 ### Lineage-grouped evaluation
 
-Strain-name grouping affects only 19 genomes, so splits were rebuilt using
-k-mer similarity clusters as a lineage proxy (394 clusters at Jaccard distance
-0.10; `lineage_cluster.py`). Under lineage grouping, near-identical isolates
-cannot span train and test.
+Strain-name grouping affects only 19 genomes, so splits were rebuilt using k-mer similarity clusters as a lineage proxy (394 clusters at Jaccard distance 0.10; `lineage_cluster.py`). Under lineage grouping, near-identical isolates cannot span train and test.
 
-AUROC, strain-grouped (70/10/20, early stopping) vs lineage-grouped (80/20,
-fixed trees):
+AUROC, strain-grouped (70/10/20, early stopping) vs lineage-grouped (80/20, fixed trees):
 
 | Antibiotic | Strain @10k | Lineage @10k | Lineage @50k | Lineage @200k |
 |---|---|---|---|---|
@@ -170,21 +173,11 @@ fixed trees):
 | erythromycin | 0.931 | 0.907 | 0.954 | 0.963 |
 | clindamycin | 0.892 | 0.755 | 0.857 | 0.851 |
 
-\* methicillin lineage splits are degenerate: one 460-genome cluster forces
-test sets that are 87–95% resistant in every seed, so its five seeds are not
-independent replicates.
+\* methicillin lineage splits are degenerate: one 460-genome cluster forces test sets that are 87–95% resistant in every seed, so its five seeds are not independent replicates.
 
-Two effects separate out. First, an insufficient feature budget can masquerade
-as lineage sensitivity: at 10,000 features the MLSb antibiotics appear to
-depend on population structure, but erythromycin fully recovers at 50,000
-(0.954) and exceeds its strain-grouped score at 200,000 (0.963), with seed
-variance falling from ±0.054 to ±0.014. Second, clindamycin retains a residual
-lineage effect after the feature budget is corrected (0.857 at 50k, plateauing,
-versus 0.892 strain-grouped, seed sd ±0.071), consistent with inducible MLSb
-resistance where *erm* presence does not fully determine phenotype.
+Two effects separate out. First, an insufficient feature budget can masquerade as lineage sensitivity: at 10,000 features the MLSb antibiotics appear to depend on population structure, but erythromycin fully recovers at 50,000 (0.954) and exceeds its strain-grouped score at 200,000 (0.963), with seed variance falling from ±0.054 to ±0.014. Second, clindamycin retains a residual lineage effect after the feature budget is corrected (0.857 at 50k, plateauing, versus 0.892 strain-grouped, seed sd ±0.071), consistent with inducible MLSb resistance where *erm* presence does not fully determine phenotype.
 
-Practical consequence: feature counts should be set per antibiotic, with ~50,000
-as a floor for MLSb drugs rather than a single global value.
+Practical consequence: feature counts should be set per antibiotic, with ~50,000 as a floor for MLSb drugs rather than a single global value.
 
 ### Cross-study generalization
 
@@ -205,15 +198,17 @@ Phenotypes derive from ~15 source studies with sharply differing resistance prev
 * Leakage-controlled splits and chi-square feature selection complete
 * Six antibiotic-specific models trained and evaluated across five classifiers
 * Known resistance mechanisms recovered and verified (*mecA*, *gyrA*, *grlA*)
-* Feature-count sensitivity and cross-study robustness analyses complete
-* Remaining: lineage-aware (MLST) split evaluation, characterization of high-ranking
-  features not matching known determinants, possible expansion to additional
-  antibiotics, external validation
+* Feature-count sensitivity, cross-study robustness, and lineage-grouped
+  evaluation complete
+* Remaining: characterization of high-ranking features not matching known
+  determinants, possible expansion to additional antibiotics, external validation
 
 ## Limitations
 
 * Methicillin phenotypes carry no MIC values and no recorded typing method for 78% of rows; performance should be read with that provenance in mind.
-* Splits are grouped by strain name only; lineage-aware grouping has not yet been tested, so clonal structure may still inflate random-split estimates.
+* Lineage grouping uses k-mer similarity clusters as a proxy; formal MLST or core-genome typing has not been applied, and cluster boundaries depend on the chosen distance cutoff.
+* Methicillin lineage-grouped splits are dominated by a single large cluster, so its cross-lineage estimate rests on effectively one replicate.
+* The strain-grouped and lineage-grouped arms differ in design (70/10/20 with early stopping vs 80/20 with fixed trees), so the comparison between them is indicative rather than strictly like-for-like.
 * External validation on an independent database or time period has not yet been performed.
 
 ## Contributors
