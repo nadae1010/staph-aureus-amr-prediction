@@ -142,6 +142,11 @@ Top-ranked features map to known resistance determinants without supervision:
 
 * **cefoxitin** — 29 of the top 50 k-mers fall inside *mecA*, present in 94.7% of resistant and 15.1% of susceptible genomes
 * **ciprofloxacin** — top k-mers encode *gyrA* S84L and *grlA* S80F, the canonical quinolone-resistance point mutations
+* **ciprofloxacin** — the four top contigs form two single-nucleotide pairs:
+  *gyrA* S84L (86.1% R / 3.4% S) with wild-type Ser84 (7.8% R / 95.5% S), and
+  *grlA* S80F (81.4% R / 4.7% S) with wild-type Ser80 (4.3% R / 91.0% S). Each
+  is 61 bp from exactly 31 k-mers — the arithmetic signature of a point
+  mutation (2k−1 bp from k altered k-mers).
 
 ### Feature-count requirements track resistance architecture
 
