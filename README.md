@@ -138,15 +138,43 @@ Across all six antibiotics, LASSO logistic regression, linear SVM, random forest
 
 ### Mechanism recovery
 
-Top-ranked features map to known resistance determinants without supervision:
+Stable top-ranked k-mers (top 5,000 in at least four of five seeds) were
+assembled into contigs on 30 bp overlap (`kmer_contigs.py`), then identified by
+translation and by BLAST. No alignment, reference genome, or gene annotation is
+used anywhere in the pipeline.
 
-* **cefoxitin** — 29 of the top 50 k-mers fall inside *mecA*, present in 94.7% of resistant and 15.1% of susceptible genomes
-* **ciprofloxacin** — top k-mers encode *gyrA* S84L and *grlA* S80F, the canonical quinolone-resistance point mutations
-* **ciprofloxacin** — the four top contigs form two single-nucleotide pairs:
-  *gyrA* S84L (86.1% R / 3.4% S) with wild-type Ser84 (7.8% R / 95.5% S), and
-  *grlA* S80F (81.4% R / 4.7% S) with wild-type Ser80 (4.3% R / 91.0% S). Each
-  is 61 bp from exactly 31 k-mers — the arithmetic signature of a point
-  mutation (2k−1 bp from k altered k-mers).
+| Antibiotic | Top locus | Genetic context | R / S |
+|---|---|---|---|
+| methicillin | *mecA* (PBP2a) | SCCmec | 98.5% / 0.5% |
+| oxacillin | *mecA* | SCCmec | 90.4% / 7.3% |
+| cefoxitin | *mecA* | SCCmec | 88.0% / 12.9% |
+| ciprofloxacin | *gyrA* S84L, *grlA* S80F | chromosomal point mutations | 86.1% / 3.4% |
+| erythromycin | *erm*(C) | 2,473 bp plasmid | 48.1% / 2.4% |
+| clindamycin | *mecA* | SCCmec | 82.2% / 20.5% |
+
+**Contig length distinguishes mechanism class.** Ciprofloxacin's longest contig
+is 75 bp while the others reach 2,500–2,800 bp. A point mutation alters exactly
+*k* k-mers, which assemble into a 2*k*−1 bp window; an acquired gene contributes
+k-mers across its full length. Contig length therefore diagnoses point-mutation
+versus acquired-gene resistance without annotation.
+
+**Both alleles of the quinolone-resistance mutations were recovered.** The four
+top ciprofloxacin contigs form two pairs differing at a single nucleotide:
+*gyrA* S84L (86.1% R / 3.4% S) with wild-type Ser84 (7.8% R / 95.5% S), and
+*grlA* S80F (81.4% R / 4.7% S) with wild-type Ser80 (4.3% R / 91.0% S). Each is
+61 bp from exactly 31 k-mers, the arithmetic signature of a SNP.
+
+**Erythromycin's determinant is plasmid-borne.** Its top contig closes on
+itself with a 30 bp overlap, giving a 2,473 bp circular element carrying a
+244-aa ORF with the GSGKG (SAM-binding) and NIPY (N6-adenine methyltransferase)
+motifs, confirmed by blastx as Erm(C) at 100% identity.
+
+**Clindamycin's top features are *mecA*, not an MLSb determinant.** Its two
+leading contigs are the same *mecA*-containing loci ranked first by the
+beta-lactams. The *erm*(C) plasmid does not appear among its features at all.
+The model predicts clindamycin resistance through linkage to SCCmec rather than
+through a causal determinant, which is consistent with its being the one
+antibiotic that retains a lineage penalty under lineage-grouped evaluation.
 
 ### Feature-count requirements track resistance architecture
 
