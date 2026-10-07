@@ -170,11 +170,18 @@ itself with a 30 bp overlap, giving a 2,473 bp circular element carrying a
 motifs, confirmed by blastx as Erm(C) at 100% identity.
 
 **Clindamycin's top features are *mecA*, not an MLSb determinant.** Its two
-leading contigs are the same *mecA*-containing loci ranked first by the
-beta-lactams. The *erm*(C) plasmid does not appear among its features at all.
-The model predicts clindamycin resistance through linkage to SCCmec rather than
-through a causal determinant, which is consistent with its being the one
-antibiotic that retains a lineage penalty under lineage-grouped evaluation.
+leading contigs are the same *mecA* loci ranked first by the beta-lactams;
+*erm*(C) does not appear among its features. The cause is coverage under the
+feature-selection chi-square, which conditions on feature-positive samples:
+*mecA* is carried by 82.3% of clindamycin-resistant isolates (21.6% of
+susceptible, chi2 334), while *erm*(C) reaches only 29.5% (7.9%, chi2 118).
+Among *mecA*-negative isolates 708 of 912 are susceptible to both MLSb drugs,
+so *mecA* marks a broadly co-resistant MRSA population rather than conferring
+clindamycin resistance. Inducible expression contributes modestly — 14% of
+*erm*(C) carriers are erythromycin-resistant but clindamycin-susceptible, which
+degrades *erm*(C)'s clindamycin specificity. Because the co-resistance structure
+is lineage-associated, this is the likely reason clindamycin is the one
+antibiotic retaining a penalty under lineage-grouped evaluation.
 
 ### Feature-count requirements track resistance architecture
 
