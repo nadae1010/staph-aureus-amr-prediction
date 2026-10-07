@@ -119,6 +119,12 @@ Models are assessed with accuracy, precision, recall, F1, ROC-AUC, precision–r
 
 ## Results
 
+RESULT: inducible expression is a minor effect -- 40 of 285 erm(C) carriers
+(14%) are erythromycin-resistant but clindamycin-susceptible. The dominant
+cause of mecA outranking erm(C) for clindamycin is coverage under the
+feature-selection chi-square: mecA 82.3% of resistant isolates (chi2 334) vs
+erm(C) 29.5% (chi2 118).
+
 ### Predictive performance
 
 XGBoost, top 10,000 k-mers, mean over 5 seeds:
