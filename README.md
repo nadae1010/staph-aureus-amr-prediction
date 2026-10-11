@@ -67,11 +67,15 @@ staph-aureus-amr-prediction/
 │   ├── genome_sources.csv         # genome -> source study mapping
 │   ├── lineage_clusters.csv       # genome -> k-mer similarity cluster
 │   ├── missing_ids.txt
+│   ├── external_accessions.txt    # 1,235 NCBI assembly accessions
+│   ├── external_phenotypes.tsv    # NCBI AST phenotypes
 │   ├── staph_results/             # random-split results, all feature counts
 │   ├── staph_results_source/      # held-out-study results
 │   ├── staph_results_source_cal/  # threshold-calibrated variant
 │   ├── staph_results_models/      # five-model comparison
-│   └── staph_results_lineage/     # lineage-grouped results
+│   ├── staph_results_lineage/     # lineage-grouped results
+│   ├── staph_results_external/    # external validation + dedup report
+│   └── staph_loci/                # per-antibiotic locus pattern tables
 └── src/
     ├── clean_amr.py               # phenotype cleaning
     ├── make_one_final_csv.py      # wide phenotype matrix
@@ -82,11 +86,21 @@ staph-aureus-amr-prediction/
     ├── train_pilot.py             # XGBoost training and evaluation
     ├── model_compare.py           # five-model comparison
     ├── kmer_interpret.py          # top-feature extraction
+    ├── kmer_contigs.py            # contig assembly from overlapping k-mers
+    ├── mlsb_test.py               # erm(C) vs mecA carriage against MLSb phenotypes
     ├── source_holdout.py          # cross-study evaluation
     ├── source_holdout_cal.py      # threshold-calibrated variant
     ├── lineage_cluster.py         # k-mer similarity clustering
     ├── make_splits_lineage.py     # lineage-grouped 80/20 splits
-    └── train_lineage.py           # training on lineage-grouped splits
+    ├── train_lineage.py           # training on lineage-grouped splits
+    ├── export_model.py            # final per-antibiotic models on all labelled genomes
+    ├── featurize_external.py      # k-mer presence over external assemblies
+    ├── validate_external.py       # deduplication and external scoring
+    ├── score_external.py          # standalone FASTA-manifest scorer
+    ├── linkage_external.py        # locus-phenotype association, both datasets
+    ├── count_loci.py              # collapse top features into presence patterns
+    ├── retrain_without_meca.py    # mecA-excluded refits
+    └── bootstrap_variants.py      # paired bootstrap on the exclusion difference
 ```
 
 ## Data-processing workflow
@@ -106,24 +120,20 @@ staph-aureus-amr-prediction/
 13. Create training, validation, and test partitions without genome or strain leakage.
 14. Rank features by chi-square on training rows only.
 15. Train and evaluate antibiotic-specific prediction models.
+16. Export final models trained on all labelled genomes and validate on an
+    independent NCBI collection.
 
 ## Data-leakage prevention
 
 Training, validation, and test sets are separated at the genome level; records representing the same genome never appear in multiple partitions. Splits are grouped by strain name so that repeated strain records stay within one partition, and each split is verified by assertion before use. All preprocessing — including chi-square feature selection — is fitted on training data only and applied unchanged to validation and test sets.
 
-Partitions are 70/10/20, repeated over five fixed seeds (0–4), with class counts recorded for every split. A second, stricter split design groups genomes by k-mer similarity cluster (see *Lineage-grouped evaluation* below).
+Partitions are 70/10/20, repeated over five fixed seeds (0–4), with class counts recorded for every split. A second, stricter split design groups genomes by k-mer similarity cluster (see *Lineage-grouped evaluation* below). A third check applies to the external collection: because BV-BRC ingests public assemblies, every external genome is compared to every training genome by Jaccard similarity over a 20,000 k-mer panel and near-identical genomes are excluded before scoring (see *External validation*).
 
 ## Model evaluation
 
 Models are assessed with accuracy, precision, recall, F1, ROC-AUC, precision–recall AUC, confusion matrices, and class-specific performance, reported as mean ± standard deviation across the five seeds.
 
 ## Results
-
-RESULT: inducible expression is a minor effect -- 40 of 285 erm(C) carriers
-(14%) are erythromycin-resistant but clindamycin-susceptible. The dominant
-cause of mecA outranking erm(C) for clindamycin is coverage under the
-feature-selection chi-square: mecA 82.3% of resistant isolates (chi2 334) vs
-erm(C) 29.5% (chi2 118).
 
 ### Predictive performance
 
@@ -183,11 +193,10 @@ feature-selection chi-square, which conditions on feature-positive samples:
 susceptible, chi2 334), while *erm*(C) reaches only 29.5% (7.9%, chi2 118).
 Among *mecA*-negative isolates 708 of 912 are susceptible to both MLSb drugs,
 so *mecA* marks a broadly co-resistant MRSA population rather than conferring
-clindamycin resistance. Inducible expression contributes modestly — 14% of
-*erm*(C) carriers are erythromycin-resistant but clindamycin-susceptible, which
-degrades *erm*(C)'s clindamycin specificity. Because the co-resistance structure
-is lineage-associated, this is the likely reason clindamycin is the one
-antibiotic retaining a penalty under lineage-grouped evaluation.
+clindamycin resistance. Inducible expression contributes modestly — 40 of 285
+*erm*(C) carriers (14%) are erythromycin-resistant but clindamycin-susceptible,
+which degrades *erm*(C)'s clindamycin specificity but is not the dominant cause
+(`mlsb_test.py`).
 
 ### Feature-count requirements track resistance architecture
 
@@ -221,13 +230,135 @@ AUROC, strain-grouped (70/10/20, early stopping) vs lineage-grouped (80/20, fixe
 
 \* methicillin lineage splits are degenerate: one 460-genome cluster forces test sets that are 87–95% resistant in every seed, so its five seeds are not independent replicates.
 
-Two effects separate out. First, an insufficient feature budget can masquerade as lineage sensitivity: at 10,000 features the MLSb antibiotics appear to depend on population structure, but erythromycin fully recovers at 50,000 (0.954) and exceeds its strain-grouped score at 200,000 (0.963), with seed variance falling from ±0.054 to ±0.014. Second, clindamycin retains a residual lineage effect after the feature budget is corrected (0.857 at 50k, plateauing, versus 0.892 strain-grouped, seed sd ±0.071), consistent with inducible MLSb resistance where *erm* presence does not fully determine phenotype.
+Two effects separate out. First, an insufficient feature budget can masquerade as lineage sensitivity: at 10,000 features the MLSb antibiotics appear to depend on population structure, but erythromycin fully recovers at 50,000 (0.954) and exceeds its strain-grouped score at 200,000 (0.963), with seed variance falling from ±0.054 to ±0.014. Second, clindamycin retains a residual lineage effect after the feature budget is corrected (0.857 at 50k, plateauing, versus 0.892 strain-grouped, seed sd ±0.071). Because *mecA* carriage is lineage-associated and *mecA* is clindamycin's top-ranked feature, this residual is the within-dataset shadow of the linkage dependence that the external validation below makes explicit.
 
 Practical consequence: feature counts should be set per antibiotic, with ~50,000 as a floor for MLSb drugs rather than a single global value.
 
 ### Cross-study generalization
 
 Phenotypes derive from ~15 source studies with sharply differing resistance prevalence; source study alone predicts the label at 72–85% accuracy. Held-out-study evaluation shows discrimination largely survives (AUROC 0.82–0.99), but decision thresholds do not transfer. Calibrating thresholds on other training studies did not help and degraded F1 for four of six antibiotics (`source_holdout_cal.py`, documented negative result). AUROC and AUPRC are the appropriate cross-study metrics.
+
+### External validation
+
+Final models were retrained on all labelled genomes (`export_model.py`) with
+per-antibiotic feature budgets, then applied to **1,235 *S. aureus* assemblies
+from the NCBI Pathogen Detection AST Browser**, a collection independent of
+BV-BRC. Because BV-BRC ingests public assemblies, each external genome was
+compared to all 4,610 training genomes by Jaccard similarity over a 20,000
+k-mer panel; **87 genomes at or above 0.99 were excluded**, leaving 1,148.
+Results below are post-deduplication.
+
+| Antibiotic | n | ext %R | F1 | AUROC | AUPRC | Precision | Recall | Internal (strain) | Internal (lineage) |
+|---|---|---|---|---|---|---|---|---|---|
+| ciprofloxacin | 729 | 4.9% | 0.833 | **0.992** | 0.847 | 0.833 | 0.833 | 0.969 | 0.949 |
+| oxacillin | 1,132 | 29.1% | 0.940 | **0.988** | 0.967 | 0.948 | 0.933 | 0.954 | 0.883 |
+| cefoxitin | 337 | 33.2% | 0.857 | **0.969** | 0.968 | 1.000 | 0.750 | 0.987 | 0.985 |
+| erythromycin | 1,118 | 41.0% | 0.913 | **0.961** | 0.959 | 0.971 | 0.862 | 0.964 | 0.954 |
+| clindamycin | 1,109 | 30.0% | 0.591 | **0.758** | 0.699 | 0.840 | 0.456 | 0.942 | 0.851 |
+
+Internal columns are taken at the same feature budget as the exported model
+(5,000 for ciprofloxacin and cefoxitin; 50,000 for oxacillin and erythromycin;
+200,000 for clindamycin).
+
+Four of five models transfer at or near their internal performance; ciprofloxacin
+and oxacillin exceed it. **Methicillin could not be validated externally**: NCBI
+carries no methicillin AST records, which reflects the same clinical reality —
+methicillin has been replaced by oxacillin and cefoxitin in routine testing —
+that made its BV-BRC labels thin.
+
+The results reproduced exactly on a second full re-featurization against a
+different k-mer union, to four decimal places.
+
+### Linkage structure explains the clindamycin failure
+
+Clindamycin is the only model that fails externally, and its top features are
+*mecA* rather than an MLSb determinant. Linkage is a property of a population,
+not of the organism, so a collection with different MRSA composition should
+break it. Carriage of each locus was scored identically in both datasets (at
+least half the locus's k-mers present) and cross-tabulated against phenotype
+(`linkage_external.py`):
+
+| Locus – phenotype | Training OR | External OR |
+|---|---|---|
+| *mecA* – cefoxitin | 118 | 4,964 |
+| *mecA* – oxacillin | 112 | 4,137 |
+| *mecA* – erythromycin | 10.8 | 3.0 |
+| *mecA* – clindamycin | 16.8 | **1.5** |
+| *erm*(C) – erythromycin | 29.2 | 277 |
+| *erm*(C) – clindamycin | 4.9 | 162 |
+
+Causal determinants strengthen in the external population; the linkage marker
+collapses. Externally *erm*(C) is nearly perfectly specific for clindamycin —
+one carrier among 833 susceptible isolates — but covers only 22.5% of resistant
+isolates, which is the direct cause of the 0.456 external recall.
+
+### Locus-level feature structure
+
+Exact ties in chi-square score indicate k-mers with identical presence vectors,
+i.e. k-mers tiling a single locus. Collapsing each model's top 10,000 features
+into distinct presence patterns (`count_loci.py`) shows what each model is
+actually betting on:
+
+| Antibiotic | distinct patterns | highest-coverage locus | its OR | best other locus | its OR | external AUROC |
+|---|---|---|---|---|---|---|
+| cefoxitin | 959 | 96.2% of R | 118 | — | — | 0.969 |
+| oxacillin | 483 | 90.7% of R | 112 | — | — | 0.988 |
+| erythromycin | 742 | 82.7% of R | 10.8 | 29.1% of R | 34–44 | 0.961 |
+| ciprofloxacin | 563 | 51.5% of R | 13.8 | 42.2% of R | 25–36 | 0.992 |
+| clindamycin | 325 | 82.3% of R | 16.7 | 36.1% of R | 19–25 | **0.758** |
+
+The per-pattern odds ratios independently reproduce the linkage table above
+(16.7–16.9 for clindamycin's three *mecA* patterns against the 16.8 measured
+separately; 10.8, 117.8 and 111.6 likewise), a consistency check across two
+scripts that share no code.
+
+Concentration alone does not predict transfer: oxacillin has the second-fewest
+patterns and the second-best external AUROC. What separates the models is
+whether a *causal* locus is available at high coverage. Cefoxitin and oxacillin
+have one (*mecA*, carried by 90–96% of resistant isolates at OR >110).
+Erythromycin and ciprofloxacin lack a high-coverage causal locus but have
+low-coverage determinants specific enough to compose (OR 25–44). Clindamycin
+has neither: its only high-coverage feature is the confounder, and its genuine
+determinants reach 36% coverage at the weakest specificity in the set.
+
+Note that *mecA* also appears among erythromycin's top features (82.7% of
+resistant, OR 10.8) and erythromycin still transfers at 0.961. Using *mecA* is
+therefore not the failure condition; having nothing better available is.
+
+### Excluding the confounded feature
+
+Clindamycin was refit with *mecA* removed, at two exclusion widths
+(`retrain_without_meca.py`): *narrow*, the 2,799 k-mers of the assembled *mecA*
+block, and *broad*, every k-mer with |φ| > 0.7 against *mecA* carriage (5,492
+k-mers). Erythromycin was refit identically as a control, its determinant being
+*erm*(C) rather than *mecA*. Significance was assessed by paired bootstrap over
+the external genomes, 2,000 resamples (`bootstrap_variants.py`):
+
+| Model | External AUROC | Δ vs baseline | 95% CI |
+|---|---|---|---|
+| clindamycin | 0.7580 | — | — |
+| clindamycin, *mecA* narrow | 0.7749 | **+0.0168** | +0.0099, +0.0242 |
+| clindamycin, *mecA* broad | 0.7732 | **+0.0150** | +0.0057, +0.0237 |
+| erythromycin | 0.9614 | — | — |
+| erythromycin, *mecA* narrow | 0.9579 | −0.0035 | −0.0066, −0.0008 |
+| erythromycin, *mecA* broad | 0.9556 | −0.0058 | −0.0099, −0.0019 |
+
+The same intervention improves the model whose top feature was a confounder and
+slightly degrades the control, both intervals excluding zero. The double
+dissociation, in the directions predicted in advance by the linkage
+measurement, is the result; the magnitude is small and clindamycin remains
+unusable at 0.775. The control's significant negative shift indicates the
+exclusion is not free — *mecA* carries some genuine information for
+erythromycin, since MRSA lineages carry *erm* more often — and nets positive
+only where *mecA* was substituting for a determinant the model could not
+otherwise reach.
+
+Consistent with that, the exclusion is surgical rather than structural: across
+the nine exported models the union of selected k-mers is 281,102 against
+815,000 nominal, meaning clindamycin's three variants share roughly 97% of
+their features. Chi-square backfilled the removed columns with near-equivalent
+substitutes, as the flat score curve predicts — rank 1 scores 270.3 and rank
+1,000 scores 252.0.
 
 ## Reproducibility notes
 
@@ -237,25 +368,40 @@ Phenotypes derive from ~15 source studies with sharply differing resistance prev
 * Dataset versions and download dates are documented.
 * Large genomic files and the feature matrix are not committed.
 * Intermediate and generated files are excluded through `.gitignore`.
+* Models trained on CSR input treat absent k-mers as missing rather than zero;
+  external scoring therefore passes `missing=0` explicitly when predicting from
+  dense presence matrices. Omitting this returns a constant prediction and an
+  AUROC of exactly 0.500.
 
 ## Current status
 
 * Phenotype processing, genome retrieval, and feature-matrix construction complete
 * Leakage-controlled splits and chi-square feature selection complete
 * Six antibiotic-specific models trained and evaluated across five classifiers
-* Known resistance mechanisms recovered and verified (*mecA*, *gyrA*, *grlA*)
+* Known resistance mechanisms recovered and verified (*mecA*, *gyrA*, *grlA*,
+  *erm*(C))
 * Feature-count sensitivity, cross-study robustness, and lineage-grouped
   evaluation complete
+* External validation on 1,148 independent NCBI genomes complete; four of five
+  testable models transfer
+* Clindamycin failure characterized as linkage dependence, with a measured
+  intervention
 * Remaining: characterization of high-ranking features not matching known
-  determinants, possible expansion to additional antibiotics, external validation
+  determinants; possible expansion to additional antibiotics; decision on
+  whether to pursue a clindamycin-specific selection criterion
 
 ## Limitations
 
 * Methicillin phenotypes carry no MIC values and no recorded typing method for 78% of rows; performance should be read with that provenance in mind.
+* Methicillin cannot be externally validated — NCBI holds no methicillin AST records — so it is the one antibiotic whose performance rests entirely on BV-BRC.
 * Lineage grouping uses k-mer similarity clusters as a proxy; formal MLST or core-genome typing has not been applied, and cluster boundaries depend on the chosen distance cutoff.
 * Methicillin lineage-grouped splits are dominated by a single large cluster, so its cross-lineage estimate rests on effectively one replicate.
 * The strain-grouped and lineage-grouped arms differ in design (70/10/20 with early stopping vs 80/20 with fixed trees), so the comparison between them is indicative rather than strictly like-for-like.
-* External validation on an independent database or time period has not yet been performed.
+* Clindamycin is not usable as a predictor in either population and should be reported as a characterized failure rather than a performance figure.
+* The external deduplication threshold (Jaccard ≥ 0.99 over a 20,000 k-mer panel) is a single chosen cutoff; 695 of 1,235 external genomes exceed 0.95, so the external collection is similar to the training collection at the panel level even after exclusion.
+* *mecA* carriage is scored by presence of at least half the locus's k-mers; this threshold was not separately validated.
+* The paired bootstrap resamples external genomes only. It does not account for variance from the single training draw, nor for two exclusion widths having been tested.
+* Ciprofloxacin's largest presence patterns span 700–960 bp, which is inconsistent with the 61 bp signature expected of a point mutation; whether these represent surrounding haplotype rather than the *gyrA*/*grlA* mutations themselves has not been resolved.
 
 ## Contributors
 
