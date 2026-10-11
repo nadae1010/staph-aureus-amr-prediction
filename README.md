@@ -60,49 +60,61 @@ Built with KMX (github.com/M-Serajian/KMX): **4,610 genomes × 11,351,471 k-mers
 ```text
 staph-aureus-amr-prediction/
 ├── README.md
-├── data/                          # phenotype tables, ID lists, results JSONs
+├── data/
+│   ├── README.md
 │   ├── FINAL_staph_aureus_AMR_phenotypes.csv
 │   ├── FILTERED_staph_aureus_AMR_phenotypes.csv
+│   ├── FINAL_staph_aureus_genome_ids.txt
 │   ├── phenotypes_matrix_aligned.csv
-│   ├── genome_sources.csv         # genome -> source study mapping
-│   ├── lineage_clusters.csv       # genome -> k-mer similarity cluster
-│   ├── missing_ids.txt
-│   ├── external_accessions.txt    # 1,235 NCBI assembly accessions
-│   ├── external_phenotypes.tsv    # NCBI AST phenotypes
-│   ├── staph_results/             # random-split results, all feature counts
-│   ├── staph_results_source/      # held-out-study results
-│   ├── staph_results_source_cal/  # threshold-calibrated variant
-│   ├── staph_results_models/      # five-model comparison
-│   ├── staph_results_lineage/     # lineage-grouped results
-│   ├── staph_results_external/    # external validation + dedup report
-│   └── staph_loci/                # per-antibiotic locus pattern tables
+│   ├── AMR_summary_stats.csv
+│   ├── Additional Antibiotic Eligibility Review-2.xlsx
+│   ├── missing_ids.txt              # 334 genomes not recovered from BV-BRC
+│   ├── genome_sources.csv           # genome -> source study mapping
+│   ├── lineage_clusters.csv         # genome -> k-mer similarity cluster
+│   ├── contigs_all.tsv              # assembled top-feature contigs
+│   ├── long_contigs.fasta           # same, FASTA for BLAST
+│   ├── external_accessions.txt      # 1,235 NCBI assembly accessions
+│   ├── external_phenotypes.tsv      # NCBI AST phenotypes
+│   ├── external_results.json        # external validation metrics
+│   ├── dedup_report.tsv             # per-genome Jaccard vs training set
+│   ├── loci_cefoxitin.tsv           # locus presence patterns, per antibiotic
+│   ├── loci_ciprofloxacin.tsv
+│   ├── loci_clindamycin.tsv
+│   ├── loci_erythromycin.tsv
+│   ├── loci_oxacillin.tsv
+│   ├── staph_results/               # random-split results, all feature counts
+│   ├── staph_results_source/        # held-out-study results
+│   ├── staph_results_source_cal/    # threshold-calibrated variant
+│   ├── staph_results_models/        # five-model comparison
+│   ├── staph_results_lineage/       # lineage-grouped results
+│   └── staph_interpret/             # top-feature extraction output
 └── src/
-    ├── clean_amr.py               # phenotype cleaning
-    ├── make_one_final_csv.py      # wide phenotype matrix
-    ├── make_amr_stats.py          # summary statistics
-    ├── run_kmx.sh                 # k-mer matrix (GPU Slurm job)
-    ├── make_splits.py             # strain-grouped 70/10/20 splits
-    ├── chi2_rank.py               # chi-square feature ranking
-    ├── train_pilot.py             # XGBoost training and evaluation
-    ├── model_compare.py           # five-model comparison
-    ├── kmer_interpret.py          # top-feature extraction
-    ├── kmer_contigs.py            # contig assembly from overlapping k-mers
-    ├── mlsb_test.py               # erm(C) vs mecA carriage against MLSb phenotypes
-    ├── source_holdout.py          # cross-study evaluation
-    ├── source_holdout_cal.py      # threshold-calibrated variant
-    ├── lineage_cluster.py         # k-mer similarity clustering
-    ├── make_splits_lineage.py     # lineage-grouped 80/20 splits
-    ├── train_lineage.py           # training on lineage-grouped splits
-    ├── export_model.py            # final per-antibiotic models on all labelled genomes
-    ├── featurize_external.py      # k-mer presence over external assemblies
-    ├── validate_external.py       # deduplication and external scoring
-    ├── score_external.py          # standalone FASTA-manifest scorer
-    ├── linkage_external.py        # locus-phenotype association, both datasets
-    ├── count_loci.py              # collapse top features into presence patterns
-    ├── retrain_without_meca.py    # mecA-excluded refits
-    └── bootstrap_variants.py      # paired bootstrap on the exclusion difference
+    ├── README.md
+    ├── clean_amr.py                 # phenotype cleaning
+    ├── make_one_final_csv.py        # wide phenotype matrix
+    ├── make_amr_stats.py            # summary statistics
+    ├── run_kmx.sh                   # k-mer matrix (GPU Slurm job)
+    ├── make_splits.py               # strain-grouped 70/10/20 splits
+    ├── chi2_rank.py                 # chi-square feature ranking
+    ├── train_pilot.py               # XGBoost training and evaluation
+    ├── model_compare.py             # five-model comparison
+    ├── kmer_interpret.py            # top-feature extraction
+    ├── kmer_contigs.py              # contig assembly from overlapping k-mers
+    ├── mlsb_test.py                 # erm(C) vs mecA carriage against MLSb phenotypes
+    ├── source_holdout.py            # cross-study evaluation
+    ├── source_holdout_cal.py        # threshold-calibrated variant
+    ├── lineage_cluster.py           # k-mer similarity clustering
+    ├── make_splits_lineage.py       # lineage-grouped 80/20 splits
+    ├── train_lineage.py             # training on lineage-grouped splits
+    ├── export_model.py              # final per-antibiotic models on all labelled genomes
+    ├── featurize_external.py        # k-mer presence over external assemblies
+    ├── validate_external.py         # deduplication and external scoring
+    ├── score_external.py            # standalone FASTA-manifest scorer
+    ├── linkage_external.py          # locus-phenotype association, both datasets
+    ├── count_loci.py                # collapse top features into presence patterns
+    ├── retrain_without_meca.py      # mecA-excluded refits
+    └── bootstrap_variants.py        # paired bootstrap on the exclusion difference
 ```
-
 ## Data-processing workflow
 
 1. Download the complete BV-BRC AMR phenotype table as CSV.
