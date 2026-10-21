@@ -444,11 +444,11 @@ erythromycin control was untouched at 703.2.
 
 Against the baseline's ten-seed mean of 0.7841 ± 0.0138:
 
-| Model | External AUROC (seed 0) | vs baseline mean |
-|---|---|---|
-| clindamycin baseline | 0.7580 | — |
-| *mecA* partial exclusion | 0.7749 | −0.009 |
-| beta-lactam set excluded | 0.7826 | −0.002 |
+| Model | ten-seed mean | sd | vs baseline |
+|---|---|---|---|
+| clindamycin baseline | 0.7841 | 0.0138 | — |
+| beta-lactam set excluded (loci) | 0.7812 | 0.0137 | −0.0028 (0.2 sd) |
+| plus phi > 0.5 (phi) | 0.7737 | 0.0105 | −0.0103 (0.8 sd) |
 
 **Both excluded models fall below the unexcluded baseline's expected value.**
 The apparent improvements reported earlier (+0.0168 and +0.0242, each with a
