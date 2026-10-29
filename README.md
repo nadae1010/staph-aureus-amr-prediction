@@ -558,6 +558,8 @@ because the confounder predicts better there. Only external validation exposes
 it. Retaining AURA's carrier-conditioned chi-square is therefore an
 evidence-backed choice rather than an inherited default.
 
+That ciprofloxacin result is independently informative: mecA is a confounder for ciprofloxacin as well, carried by 93.7% of resistant isolates through the same hospital-lineage association. The carrier-conditioned criterion buries it at rank 327,370 while ranking the causal mutation first. Confounding is therefore present in models that generalise successfully; clindamycin is distinguished not by having a confounder but by the confounder outranking the determinant.
+
 ## Contributors
 
 * Nada Elseifi — Graduate researcher
