@@ -516,6 +516,48 @@ this size.
 * *mecA* carriage is scored by presence of at least half the locus's k-mers; this threshold was not separately validated, and the two mecA contigs give near-identical carriage under it despite differing in per-k-mer presence.
 * The relationship between best-feature odds ratio and external AUROC rests on five antibiotics and was identified after the results were in.
 
+
+2x2 CHI-SQUARE EXPERIMENT — PRE-REGISTERED DESIGN (29 Oct 2026)
+
+HYPOTHESIS
+The carrier-conditioned chi-square ranks features by coverage, so it prefers a
+prevalent linked marker (mecA) over a rarer causal determinant (erm(C)). The
+standard 2x2 chi-square counts non-carriers and penalises false positives, so
+it should rank erm(C) above mecA for clindamycin and improve external transfer.
+
+PRIMARY OUTCOME
+External AUROC for clindamycin on the 1,109 deduplicated NCBI genomes.
+
+SECONDARY OUTCOME
+Brier score (probability calibration). Chosen over F1 because F1 confounds
+ranking quality with threshold placement.
+
+ARMS
+  A  carrier-conditioned chi-square (AURA's, current baseline)
+  B  standard 2x2 chi-square
+Same feature counts, same hyperparameters, same genomes. Only the ranking
+statistic differs.
+
+CONTROLS
+The other four externally testable antibiotics. If B degrades ciprofloxacin,
+oxacillin, cefoxitin or erythromycin, that is a cost of the change and gets
+reported alongside any clindamycin gain.
+
+SEEDS
+10 random seeds per arm per antibiotic. Comparisons are between seed
+distributions, never between single fits. Baseline clindamycin fitting
+variance is already known: sd 0.014, range 0.758-0.804.
+
+DECISION RULE (fixed in advance)
+Arm B is judged an improvement for clindamycin only if its 10-seed mean
+exceeds arm A's 10-seed mean by more than 2 pooled standard deviations
+(roughly 0.028 given sd ~0.014). Smaller differences are reported as null.
+
+STATED IN ADVANCE
+erm(C) is carried by only 22.5% of externally resistant isolates. A perfect
+ranking cannot exceed that coverage ceiling, so even a successful result is
+expected to leave clindamycin well below the other four antibiotics.
+
 ## Contributors
 
 * Nada Elseifi — Graduate researcher
