@@ -253,7 +253,8 @@ AUROC as a function of the number of chi-square-selected k-mers:
 | erythromycin | 0.730 | 0.922 | 0.931 | 0.964 | — | — |
 | clindamycin | 0.826 | 0.887 | 0.892 | 0.919 | 0.942 | 0.944 |
 
-Single-determinant mechanisms saturate by ~1,000 features. The MLSb antibiotics (erythromycin, clindamycin) require roughly 50× more, consistent with resistance distributed across multiple *erm* genes rather than one determinant. Clindamycin plateaus near 200,000. The large feature count clindamycin requires is also what makes it unstable under refitting (see *Fitting variance*).
+Single-determinant mechanisms saturate by ~1,000 features. The MLSb antibiotics (erythromycin, clindamycin) require roughly 50× more, consistent with resistance distributed across multiple *erm* genes rather than one determinant. Clindamycin plateaus near 200,000. Clindamycin's instability under refitting is related but not reducible to
+feature count: see *Fitting variance*.
 
 ### Lineage-grouped evaluation
 
@@ -301,16 +302,6 @@ Results below are post-deduplication.
 Each figure is the mean of ten refits differing only in random seed
 (`seed_variance_all.py`). Brier skill is measured against predicting the
 external base rate for every genome.
-
-† Single fit at seed 0. Refitting the identical configuration across ten seeds
-gives mean 0.784, sd 0.014, range 0.758–0.804 — 0.758 is the minimum of the
-ten. The other four antibiotics use far smaller feature sets and are expected
-to be more stable, but their seed distributions have not yet been measured and
-should be before any of these figures are quoted as point estimates.
-
-Internal columns are taken at the same feature budget as the exported model
-(5,000 for ciprofloxacin and cefoxitin; 50,000 for oxacillin and erythromycin;
-200,000 for clindamycin).
 
 Four of five models transfer at or near their internal performance; ciprofloxacin
 and oxacillin exceed it. **Methicillin could not be validated externally**: NCBI
@@ -397,8 +388,6 @@ which assumes contiguity. Both were wrong: size is not predictiveness, and the
 implied lengths were arithmetic artifacts. `pattern_structure.py` supersedes it
 and `count_loci.py` is retained only for provenance.
 
-### Fitting variance sets the resolution limit
-
 ### Fitting variance is confined to the failing model
 
 Every model was refit ten times with nothing changed but the random seed and
@@ -428,33 +417,6 @@ is why the exclusion experiments are reported as nulls. For the other four
 antibiotics, single fits would have been adequate -- but that could not be
 known without measuring it.
 
-Two clindamycin models whose exclusion sets differ by **7 k-mers out of
-119,795** — same 200,000 kept features, same top chi-square, same random seed —
-produced external AUROCs of 0.783 and 0.758. Since two models that similar
-cannot really differ by that much, the gap is fitting variance: with subsample
-0.8 and colsample_bytree 0.8, a trivial change to the column set reshuffles
-which features each tree sees.
-
-Refitting the unmodified clindamycin baseline across ten random seeds, changing
-nothing else (`seed_variance.py`):
-
-```
-seed 0  0.7580     seed 5  0.7723
-seed 1  0.7701     seed 6  0.7892
-seed 2  0.7830     seed 7  0.7957
-seed 3  0.7870     seed 8  0.7961
-seed 4  0.8038     seed 9  0.7853
-
-mean 0.7841   sd 0.0138   range 0.7580-0.8038
-```
-
-This is the noise floor every comparison in this project has to clear, and it
-is larger than any effect measured so far. It also shows that the paired
-bootstrap used earlier measures the wrong variance component: it resamples
-external genomes while holding the fitted model fixed, so it captures
-evaluation variance and is blind to fitting variance. That is why it returned
-narrow intervals and confident, contradictory verdicts for near-identical
-models.
 
 ### Excluding the confounded feature: a negative result
 
@@ -500,56 +462,6 @@ its rank 1,000 scores 252.0 — many features are interchangeable, bagged trees
 wander between them, and single-fit comparisons cannot resolve interventions of
 this size.
 
-## Reproducibility notes
-
-* Raw data is not modified manually.
-* Processed datasets are generated through version-controlled scripts.
-* Random seeds (0–4) and software dependencies are recorded.
-* Dataset versions and download dates are documented.
-* Large genomic files and the feature matrix are not committed.
-* Intermediate and generated files are excluded through `.gitignore`.
-* Models trained on CSR input treat absent k-mers as missing rather than zero;
-  external scoring therefore passes `missing=0` explicitly when predicting from
-  dense presence matrices. Omitting this returns a constant prediction and an
-  AUROC of exactly 0.500.
-* Scoring a fixed model is exactly reproducible; refitting is not. Report seed
-  distributions rather than single fits wherever models are compared.
-
-## Current status
-
-* Phenotype processing, genome retrieval, and feature-matrix construction complete
-* Leakage-controlled splits and chi-square feature selection complete
-* Six antibiotic-specific models trained and evaluated across five classifiers
-* Known resistance mechanisms recovered and verified (*mecA*, *gyrA*, *grlA*,
-  *erm*(C)); mecA shown to assemble as two non-overlapping contigs
-* Feature-count sensitivity, cross-study robustness, and lineage-grouped
-  evaluation complete
-* External validation on 1,148 independent NCBI genomes complete; four of five
-  testable models transfer
-* Clindamycin failure characterized as linkage dependence, established by
-  odds ratios rather than by the exclusion experiments, which are a null
-* Fitting variance quantified for clindamycin; the same measurement is still
-  needed for the other four antibiotics
-* Remaining: seed distributions for all external figures; characterization of
-  high-ranking features not matching known determinants; possible expansion to
-  additional antibiotics
-
-## Limitations
-
-* Methicillin phenotypes carry no MIC values and no recorded typing method for 78% of rows; performance should be read with that provenance in mind.
-* Methicillin cannot be externally validated — NCBI holds no methicillin AST records — so it is the one antibiotic whose performance rests entirely on BV-BRC.
-* Every external figure except clindamycin's is a single fit at seed 0. Clindamycin's seed distribution spans 0.046 in AUROC; the others are expected to be tighter because they use far fewer features, but this has not been measured.
-* At 200,000 features, model-fitting variance (sd 0.014) exceeds the effect of excluding the confounded feature set. No intervention of that magnitude can be resolved by this design without many more fits.
-* The paired bootstrap resamples external genomes while holding the fitted model fixed, so it reports evaluation variance only. Intervals produced by it earlier in this project understate total uncertainty and should not be read as significance tests on model comparisons.
-* Lineage grouping uses k-mer similarity clusters as a proxy; formal MLST or core-genome typing has not been applied, and cluster boundaries depend on the chosen distance cutoff.
-* Methicillin lineage-grouped splits are dominated by a single large cluster, so its cross-lineage estimate rests on effectively one replicate.
-* The strain-grouped and lineage-grouped arms differ in design (70/10/20 with early stopping vs 80/20 with fixed trees), so the comparison between them is indicative rather than strictly like-for-like.
-* Clindamycin is not usable as a predictor in either population and should be reported as a characterized failure rather than a performance figure.
-* The external deduplication threshold (Jaccard ≥ 0.99 over a 20,000 k-mer panel) is a single chosen cutoff; 695 of 1,235 external genomes exceed 0.95, so the external collection is similar to the training collection at the panel level even after exclusion.
-* *mecA* carriage is scored by presence of at least half the locus's k-mers; this threshold was not separately validated, and the two mecA contigs give near-identical carriage under it despite differing in per-k-mer presence.
-* The relationship between best-feature odds ratio and external AUROC rests on five antibiotics and was identified after the results were in.
-
-
 ### The 2x2 chi-square alternative: a pre-registered negative result
 
 The carrier-conditioned chi-square ranks features by coverage, which is why it
@@ -592,6 +504,47 @@ it. Retaining AURA's carrier-conditioned chi-square is therefore an
 evidence-backed choice rather than an inherited default.
 
 That ciprofloxacin result is independently informative: mecA is a confounder for ciprofloxacin as well, carried by 93.7% of resistant isolates through the same hospital-lineage association. The carrier-conditioned criterion buries it at rank 327,370 while ranking the causal mutation first. Confounding is therefore present in models that generalise successfully; clindamycin is distinguished not by having a confounder but by the confounder outranking the determinant.
+
+## Reproducibility notes
+
+* Raw data is not modified manually.
+* Processed datasets are generated through version-controlled scripts.
+* Random seeds (0–4) and software dependencies are recorded.
+* Dataset versions and download dates are documented.
+* Large genomic files and the feature matrix are not committed.
+* Intermediate and generated files are excluded through `.gitignore`.
+* Models trained on CSR input treat absent k-mers as missing rather than zero;
+  external scoring therefore passes `missing=0` explicitly when predicting from
+  dense presence matrices. Omitting this returns a constant prediction and an
+  AUROC of exactly 0.500.
+* Scoring a fixed model is exactly reproducible; refitting is not. Report seed
+  distributions rather than single fits wherever models are compared.
+
+## Current status
+
+* Fitting variance measured for all five externally testable models; the four
+  that transfer are stable (sd 0.0006-0.0025), clindamycin is not (sd 0.0138)
+* The 2x2 chi-square alternative tested and rejected on a pre-registered
+  decision rule
+* Remaining: characterization of high-ranking features not matching known
+  determinants; possible expansion to additional antibiotics
+
+## Limitations
+
+* Methicillin phenotypes carry no MIC values and no recorded typing method for 78% of rows; performance should be read with that provenance in mind.
+* Methicillin cannot be externally validated — NCBI holds no methicillin AST records — so it is the one antibiotic whose performance rests entirely on BV-BRC.
+* External figures are ten-seed means. The four transferring models are stable
+  (sd 0.0006-0.0025); clindamycin's sd is 0.0138, so its figure should always
+  be quoted with its range (0.758-0.804).
+* At 200,000 features, model-fitting variance (sd 0.014) exceeds the effect of excluding the confounded feature set. No intervention of that magnitude can be resolved by this design without many more fits.
+* The paired bootstrap resamples external genomes while holding the fitted model fixed, so it reports evaluation variance only. Intervals produced by it earlier in this project understate total uncertainty and should not be read as significance tests on model comparisons.
+* Lineage grouping uses k-mer similarity clusters as a proxy; formal MLST or core-genome typing has not been applied, and cluster boundaries depend on the chosen distance cutoff.
+* Methicillin lineage-grouped splits are dominated by a single large cluster, so its cross-lineage estimate rests on effectively one replicate.
+* The strain-grouped and lineage-grouped arms differ in design (70/10/20 with early stopping vs 80/20 with fixed trees), so the comparison between them is indicative rather than strictly like-for-like.
+* Clindamycin is not usable as a predictor in either population and should be reported as a characterized failure rather than a performance figure.
+* The external deduplication threshold (Jaccard ≥ 0.99 over a 20,000 k-mer panel) is a single chosen cutoff; 695 of 1,235 external genomes exceed 0.95, so the external collection is similar to the training collection at the panel level even after exclusion.
+* *mecA* carriage is scored by presence of at least half the locus's k-mers; this threshold was not separately validated, and the two mecA contigs give near-identical carriage under it despite differing in per-k-mer presence.
+* The relationship between best-feature odds ratio and external AUROC rests on five antibiotics and was identified after the results were in.
 
 ## Contributors
 
