@@ -1,0 +1,5 @@
+locus	chi2_A	rank_A	chi2_B	rank_B	R_cov	S_cov
+mecA (C-term)	436.5	327370	1083.0	161	0.9365	0.3426
+mecA (N-term)	640.1	168	1072.6	192	0.9358	0.3449
+erm(C) plasmid	266.1	520752	336.5	673840	0.3661	0.0916
+gyrA/grlA region	1303.0	0	2128.4	16	0.8607	0.0336
