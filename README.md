@@ -290,13 +290,17 @@ compared to all 4,610 training genomes by Jaccard similarity over a 20,000
 k-mer panel; **87 genomes at or above 0.99 were excluded**, leaving 1,148.
 Results below are post-deduplication.
 
-| Antibiotic | n | ext %R | F1 | AUROC | AUPRC | Precision | Recall | Internal (strain) | Internal (lineage) |
-|---|---|---|---|---|---|---|---|---|---|
-| ciprofloxacin | 729 | 4.9% | 0.833 | **0.992** | 0.847 | 0.833 | 0.833 | 0.969 | 0.949 |
-| oxacillin | 1,132 | 29.1% | 0.940 | **0.988** | 0.967 | 0.948 | 0.933 | 0.954 | 0.883 |
-| cefoxitin | 337 | 33.2% | 0.857 | **0.969** | 0.968 | 1.000 | 0.750 | 0.987 | 0.985 |
-| erythromycin | 1,118 | 41.0% | 0.913 | **0.961** | 0.959 | 0.971 | 0.862 | 0.964 | 0.954 |
-| clindamycin | 1,109 | 30.0% | 0.591 | **0.758**† | 0.699 | 0.840 | 0.456 | 0.942 | 0.851 |
+| Antibiotic | n | ext % R | AUROC (10 seeds) | sd | Brier | Brier skill |
+|---|---|---|---|---|---|---|
+| ciprofloxacin | 729 | 4.9% | **0.9912** | 0.0008 | 0.0140 | 70% |
+| oxacillin | 1,132 | 29.1% | **0.9875** | 0.0006 | 0.0339 | 84% |
+| cefoxitin | 337 | 33.2% | **0.9647** | 0.0025 | 0.0816 | 63% |
+| erythromycin | 1,118 | 41.0% | **0.9606** | 0.0009 | 0.0629 | 74% |
+| clindamycin | 1,109 | 30.0% | **0.7841** | 0.0138 | 0.1587 | 24% |
+
+Each figure is the mean of ten refits differing only in random seed
+(`seed_variance_all.py`). Brier skill is measured against predicting the
+external base rate for every genome.
 
 † Single fit at seed 0. Refitting the identical configuration across ten seeds
 gives mean 0.784, sd 0.014, range 0.758–0.804 — 0.758 is the minimum of the
@@ -394,6 +398,35 @@ implied lengths were arithmetic artifacts. `pattern_structure.py` supersedes it
 and `count_loci.py` is retained only for provenance.
 
 ### Fitting variance sets the resolution limit
+
+### Fitting variance is confined to the failing model
+
+Every model was refit ten times with nothing changed but the random seed and
+rescored on the same external genomes.
+
+| Model | features | best-feature OR | AUROC sd | range |
+|---|---|---|---|---|
+| oxacillin | 50,000 | 116.9 | 0.0006 | 0.0023 |
+| ciprofloxacin | 5,000 | 175.7 | 0.0008 | 0.0022 |
+| erythromycin | 50,000 | 36.7 | 0.0009 | 0.0027 |
+| cefoxitin | 5,000 | 99.8 | 0.0025 | 0.0081 |
+| clindamycin | 200,000 | 14.9 | 0.0138 | 0.0457 |
+
+The four models that transfer are reproducible to three decimal places.
+Clindamycin's variance is 15 to 23 times larger.
+
+Feature count alone does not explain this: oxacillin uses 50,000 features and
+has the lowest variance of the five, while cefoxitin uses 5,000 and has four
+times as much. What distinguishes clindamycin is the weakness of its strongest
+feature (OR 14.9 against 36.7-175.7 elsewhere). Where no feature is decisive,
+many are interchangeable and a bagged model wanders between them. Cefoxitin's
+slightly elevated variance reflects its smaller external set (n=337).
+
+The practical consequence stands: at clindamycin's feature count, single-fit
+comparisons cannot resolve interventions smaller than about 0.03 AUROC, which
+is why the exclusion experiments are reported as nulls. For the other four
+antibiotics, single fits would have been adequate -- but that could not be
+known without measuring it.
 
 Two clindamycin models whose exclusion sets differ by **7 k-mers out of
 119,795** — same 200,000 kept features, same top chi-square, same random seed —
