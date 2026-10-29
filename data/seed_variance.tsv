@@ -1,0 +1,6 @@
+model	antibiotic	n_external	n_features	auroc_mean	auroc_sd	auroc_min	auroc_max	brier_mean	brier_sd	f1_mean	f1_sd
+ciprofloxacin	ciprofloxacin	729	5000	0.9912	0.0008	0.9899	0.9921	0.0140	0.0006	0.8021	0.0232
+oxacillin	oxacillin	1132	50000	0.9875	0.0006	0.9861	0.9884	0.0339	0.0013	0.9357	0.0074
+cefoxitin	cefoxitin	337	5000	0.9647	0.0025	0.9607	0.9688	0.0816	0.0022	0.8377	0.0628
+erythromycin	erythromycin	1118	50000	0.9606	0.0009	0.9597	0.9624	0.0629	0.0014	0.9043	0.0065
+clindamycin	clindamycin	1109	200000	0.7841	0.0138	0.7580	0.8038	0.1587	0.0027	0.5982	0.0125
