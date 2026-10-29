@@ -517,46 +517,46 @@ this size.
 * The relationship between best-feature odds ratio and external AUROC rests on five antibiotics and was identified after the results were in.
 
 
-2x2 CHI-SQUARE EXPERIMENT — PRE-REGISTERED DESIGN (29 Oct 2026)
+### The 2x2 chi-square alternative: a pre-registered negative result
 
-HYPOTHESIS
-The carrier-conditioned chi-square ranks features by coverage, so it prefers a
-prevalent linked marker (mecA) over a rarer causal determinant (erm(C)). The
-standard 2x2 chi-square counts non-carriers and penalises false positives, so
-it should rank erm(C) above mecA for clindamycin and improve external transfer.
+The carrier-conditioned chi-square ranks features by coverage, which is why it
+selects mecA over erm(C) for clindamycin. The obvious remedy is the standard
+2x2 chi-square, which counts non-carriers and so penalises false positives.
+This was tested with the decision rule fixed in advance: arm B would be judged
+an improvement only if its ten-seed mean exceeded arm A's by more than two
+pooled standard deviations.
 
-PRIMARY OUTCOME
-External AUROC for clindamycin on the 1,109 deduplicated NCBI genomes.
+The premise failed at the first diagnostic (`chi2_compare.py`), so no models
+were retrained.
 
-SECONDARY OUTCOME
-Brier score (probability calibration). Chosen over F1 because F1 confounds
-ranking quality with threshold placement.
+| clindamycin locus | rank, carrier-conditioned | rank, standard 2x2 |
+|---|---|---|
+| mecA (C-terminal) | 45 | **6** |
+| mecA (N-terminal) | 2 | 129 |
+| *erm*(C) | 33,112 | **37,732** |
 
-ARMS
-  A  carrier-conditioned chi-square (AURA's, current baseline)
-  B  standard 2x2 chi-square
-Same feature counts, same hyperparameters, same genomes. Only the ranking
-statistic differs.
+erm(C) ranks *lower* under 2x2, not higher. The reason is false negatives,
+which the carrier-conditioned form ignores and the 2x2 does not: mecA is absent
+from only 147 of 830 clindamycin-resistant isolates, while erm(C) is absent
+from 524. Phi against phenotype is 0.61 for mecA and 0.35 for erm(C).
 
-CONTROLS
-The other four externally testable antibiotics. If B degrades ciprofloxacin,
-oxacillin, cefoxitin or erythromycin, that is a cost of the change and gets
-reported alongside any clindamycin gain.
+**Within the training population, mecA is genuinely the better predictor of
+clindamycin resistance.** Two criteria with opposing biases both select it,
+because it is correctly the better choice there.
 
-SEEDS
-10 random seeds per arm per antibiotic. Comparisons are between seed
-distributions, never between single fits. Baseline clindamycin fitting
-variance is already known: sd 0.014, range 0.758-0.804.
+The alternative also degrades two models that currently work. For erythromycin,
+erm(C) falls from rank 0 to rank 57 and mecA occupies the top five. For
+ciprofloxacin, mecA — a confounder there too, carried by 93.7% of resistant
+isolates — rises from rank 327,370 to rank 161, while the causal gyrA/grlA
+mutation falls from rank 0 to 16. AURA's criterion suppresses that confounder;
+the 2x2 does not.
 
-DECISION RULE (fixed in advance)
-Arm B is judged an improvement for clindamycin only if its 10-seed mean
-exceeds arm A's 10-seed mean by more than 2 pooled standard deviations
-(roughly 0.028 given sd ~0.014). Smaller differences are reported as null.
-
-STATED IN ADVANCE
-erm(C) is carried by only 22.5% of externally resistant isolates. A perfect
-ranking cannot exceed that coverage ceiling, so even a successful result is
-expected to leave clindamycin well below the other four antibiotics.
+The conclusion generalises beyond feature selection: **confounding by population
+structure cannot be detected or corrected from within the training population.**
+Any criterion optimising within-population prediction selects the confounder,
+because the confounder predicts better there. Only external validation exposes
+it. Retaining AURA's carrier-conditioned chi-square is therefore an
+evidence-backed choice rather than an inherited default.
 
 ## Contributors
 
