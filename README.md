@@ -514,6 +514,16 @@ evidence-backed choice rather than an inherited default.
 
 That ciprofloxacin result is independently informative: mecA is a confounder for ciprofloxacin as well, carried by 93.7% of resistant isolates through the same hospital-lineage association. The carrier-conditioned criterion buries it at rank 327,370 while ranking the causal mutation first. Confounding is therefore present in models that generalise successfully; clindamycin is distinguished not by having a confounder but by the confounder outranking the determinant.
 
+**Confounders are present in models that transfer.** Across three
+antibiotics, the deciding factor is not whether a linked marker exists but
+whether the causal determinant outranks it:
+
+| Model | Linked marker in feature set | Top-ranked feature | External AUROC |
+|---|---|---|---|
+| ciprofloxacin | mecA (rank 327,370) | gyrA S84L, causal (rank 0) | 0.991 |
+| erythromycin | ANT(6)-Ia, APH(3')-IIIa | erm(C), causal (rank 0) | 0.961 |
+| clindamycin | mecA (rank 2) | mecA, linked | 0.784 |
+
 ### Stratified clindamycin diagnostic: a pre-registered negative result
 
 Both previous fixes failed for the same reason: within the training population
