@@ -652,6 +652,8 @@ tested for.
   decision rule
 * Remaining: characterization of high-ranking features not matching known
   determinants; possible expansion to additional antibiotics
+* erm(B) identified by mecA-stratified ranking as a second causal clindamycin determinant missing from the pooled model; its association strengthens externally
+* Erythromycin's secondary features identified as co-mobilised aminoglycoside resistance genes
 
 ## Limitations
 
@@ -669,6 +671,8 @@ tested for.
 * The external deduplication threshold (Jaccard ≥ 0.99 over a 20,000 k-mer panel) is a single chosen cutoff; 695 of 1,235 external genomes exceed 0.95, so the external collection is similar to the training collection at the panel level even after exclusion.
 * *mecA* carriage is scored by presence of at least half the locus's k-mers; this threshold was not separately validated, and the two mecA contigs give near-identical carriage under it despite differing in per-k-mer presence.
 * The relationship between best-feature odds ratio and external AUROC rests on five antibiotics and was identified after the results were in.
+* The external evidence that erm(B) is causal rests on 8 carriers; its odds ratio interval spans 2.3 to 705.
+* About three quarters of external clindamycin resistance is explained by neither erm(B) nor erm(C); the responsible determinant has not been identified.
 
 ## Contributors
 
