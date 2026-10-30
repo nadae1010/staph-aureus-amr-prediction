@@ -505,6 +505,45 @@ evidence-backed choice rather than an inherited default.
 
 That ciprofloxacin result is independently informative: mecA is a confounder for ciprofloxacin as well, carried by 93.7% of resistant isolates through the same hospital-lineage association. The carrier-conditioned criterion buries it at rank 327,370 while ranking the causal mutation first. Confounding is therefore present in models that generalise successfully; clindamycin is distinguished not by having a confounder but by the confounder outranking the determinant.
 
+### Stratified clindamycin diagnostic: a pre-registered negative result
+
+Both previous fixes failed for the same reason: within the training population
+mecA genuinely predicts clindamycin better than any causal determinant, so any
+criterion optimising pooled prediction selects it. The standard response to a
+known confounder is to stratify on it. Within mecA-negative genomes mecA cannot
+contribute, so any remaining signal must come from something else.
+
+The decision rule was fixed in advance: proceed to stratified feature selection
+only if the mecA-negative stratum reached a mean cross-validated AUROC of at
+least 0.80, matching the current external mean. Cross-validation was 5-fold,
+grouped by lineage cluster, over 3 seeds, with feature selection refit inside
+every fold (`stratified_clindamycin.py`).
+
+| Stratum | n | R | S | AUROC, 5,000 features | AUROC, 50,000 features |
+|---|---|---|---|---|---|
+| mecA-negative | 913 | 147 | 766 | 0.621 ± 0.112 | **0.775 ± 0.059** |
+| mecA-positive | 894 | 683 | 211 | uninterpretable* | uninterpretable* |
+
+**Verdict: FAIL** (best 0.775 against a bar of 0.80). Without mecA there is real
+clindamycin signal in methicillin-susceptible genomes, well above chance, but
+not enough to justify building stratified selection into the pipeline.
+
+\* A single 460-genome lineage cluster dominates the mecA-positive stratum, so
+lineage-grouped folds were degenerate: one fold contained only one class and
+was skipped, and the remainder ranged from 0.00 to 0.97.
+
+**Stratification did surface a determinant the pooled analysis missed.** The top
+mecA-negative contig (523 bp; 28.6% of resistant, 2.0% of susceptible) was
+identified by blastx as Erm(B) at 100% identity. erm(B) methylates the ribosome
+and confers resistance to both macrolides and lincosamides. In the pooled
+ranking it was buried beneath mecA; it became visible only once mecA could not
+contribute. erm(C) rose from rank 33,112 to 18,456 in the same stratum.
+
+Inside the mecA-positive stratum, the leading features were markers of
+*susceptibility* (about 47% of susceptible and 3.5% of resistant isolates),
+assembling to short contigs consistent with lineage SNPs rather than a gene:
+within MRSA, the best clindamycin predictor is again a population marker.
+
 ## Reproducibility notes
 
 * Raw data is not modified manually.
