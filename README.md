@@ -240,6 +240,15 @@ clindamycin resistance. Inducible expression contributes modestly — 40 of 285
 which degrades *erm*(C)'s clindamycin specificity but is not the dominant cause
 (`mlsb_test.py`).
 
+**Erythromycin's other leading contigs are aminoglycoside resistance genes.**
+Contigs 2 (338 bp) and 5 (523 bp) are ANT(6)-Ia and contig 3 (1,053 bp) is
+APH(3')-IIIa, each at 100% identity by blastx. Both confer aminoglycoside, not
+macrolide, resistance; they are carried by 29-34% of erythromycin-resistant
+and 1-2% of susceptible genomes because they travel on mobile elements
+alongside macrolide resistance. They are linked markers within a model that
+nonetheless transfers externally, because its top-ranked feature is the causal
+erm(C).
+
 ### Feature-count requirements track resistance architecture
 
 AUROC as a function of the number of chi-square-selected k-mers:
@@ -543,6 +552,72 @@ Inside the mecA-positive stratum, the leading features were markers of
 *susceptibility* (about 47% of susceptible and 3.5% of resistant isolates),
 assembling to short contigs consistent with lineage SNPs rather than a gene:
 within MRSA, the best clindamycin predictor is again a population marker.
+
+### erm(B), and how much clindamycin resistance remains unexplained
+
+Stratification surfaced erm(B) as a clindamycin determinant the pooled analysis
+had missed. `erm_followup.py` tests it the way erm(C) and mecA were tested:
+by whether its association with clindamycin survives a change of population.
+Carriage is scored on 24 evenly spaced k-mers per locus (a genome carries the
+locus if at least half are present), identically in both collections. External
+genomes were read directly from the raw assemblies, because erm(B) was never
+selected by any model and so is absent from the external feature file.
+
+**erm(B) behaves like a causal determinant.** The prediction was stated before
+the run: a causal gene keeps an external odds ratio whose 95% interval excludes
+1, while a linked marker drifts toward 1.
+
+| Locus | Training OR | External OR (deduplicated) | External carriers, R / S |
+|---|---|---|---|
+| *erm*(B) | 8.9 [6.0, 13.3] | **40.6 [2.3, 704.7]** | 8 / 0 |
+| *erm*(C) | 4.9 [3.7, 6.4] | **461.4 [28.5, 7470.3]** | 76 / 0 |
+| *mecA* | 16.8 [13.3, 21.2] | **1.5 [1.2, 2.0]** | 122 / 213 |
+
+Both erm genes strengthen externally and neither appears in a single
+susceptible NCBI genome; mecA collapses. The prediction holds for erm(B), but
+the evidence is thin: it rests on 8 external carriers, which is why the
+interval spans two orders of magnitude.
+
+**The pooled analysis excluded erm(B) entirely.** Its best k-mer ranked
+219,559th in the pooled clindamycin ranking, beyond the 200,000-feature budget
+of the exported model, so the model never saw it. This is despite erm(B) being
+the *more* specific of the two erm genes per carrier (OR 8.9 against erm(C)'s
+4.9): the ranking rewarded erm(C)'s greater coverage, and mecA's greater still.
+
+**erm(B) and erm(C) are alternatives, not companions.** Only 3 of 830
+resistant training genomes carry both.
+
+| Resistant genomes | erm(B) only | erm(C) only | both | neither | covered |
+|---|---|---|---|---|---|
+| training, all (830) | 177 | 242 | 3 | 408 | 50.8% |
+| training, mecA-negative (147) | 41 | 36 | 1 | 69 | 53.1% |
+| training, mecA-positive (683) | 136 | 206 | 2 | 339 | 50.4% |
+| external, all (333) | 8 | 76 | 0 | 249 | **25.2%** |
+| external, mecA-negative (211) | 3 | 28 | 0 | 180 | **14.7%** |
+
+**The external resistant population is mostly mecA-negative.** 82.3% of
+clindamycin-resistant training genomes carry mecA, against 36.6% of external
+ones. In BV-BRC, clindamycin resistance largely sits in MRSA, so mecA works as
+a proxy; in NCBI most of it sits in MSSA, so the proxy fails. This is the most
+direct single explanation of the external collapse.
+
+**Most external clindamycin resistance is unexplained by either erm gene.**
+Three quarters of resistant external genomes carry neither. That resistance is
+almost always to erythromycin as well: only 12 of 1,801 training genomes and 2
+of 1,090 external genomes are clindamycin-resistant but erythromycin-
+susceptible. Lincosamide-specific mechanisms such as lnu(A) or vga(A) therefore
+account for very little. The pattern points to a third macrolide-lincosamide
+determinant, most plausibly erm(A), which does not appear among the leading
+features of either model. Notably, the erythromycin model still transfers at
+0.961 although erm(B) and erm(C) together cover only about 19% of external
+erythromycin-resistant genomes, so it must capture something that tracks this
+third determinant. Identifying it is left to reference-based annotation.
+
+**Inducible resistance is visible in the labels.** 134 training genomes are
+erythromycin-resistant but clindamycin-susceptible, and 52 of them carry erm(B)
+or erm(C). This is the inducible MLSb pattern: the gene is present, but
+clindamycin resistance is only expressed, and only labelled, when induction is
+tested for.
 
 ## Reproducibility notes
 
