@@ -517,7 +517,7 @@ The decision rule was fixed in advance: proceed to stratified feature selection
 only if the mecA-negative stratum reached a mean cross-validated AUROC of at
 least 0.80, matching the current external mean. Cross-validation was 5-fold,
 grouped by lineage cluster, over 3 seeds, with feature selection refit inside
-every fold (`stratified_clindamycin.py`).
+every fold (`stratified_clinda.py`).
 
 | Stratum | n | R | S | AUROC, 5,000 features | AUROC, 50,000 features |
 |---|---|---|---|---|---|
