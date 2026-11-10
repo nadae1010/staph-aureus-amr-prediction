@@ -1,0 +1,13 @@
+== contigs_all.fasta
+Contig id	Element symbol	Method	% Coverage of reference	% Identity to reference
+cefoxitin_c5	mecA	PARTIAL_CONTIG_ENDX	63.17	100.00
+clindamycin_c2	mecA	PARTIAL_CONTIG_ENDX	63.17	100.00
+erythromycin_c1	erm(C)	BLASTX	93.85	100.00
+erythromycin_c3	aph(3')-IIIa	EXACTX	100.00	100.00
+methicillin_c1	mecA	PARTIAL_CONTIG_ENDX	63.17	100.00
+oxacillin_c1	mecA	PARTIAL_CONTIG_ENDX	63.17	100.00
+== stratified_mecA-negative.fasta
+Contig id	Element symbol	Method	% Coverage of reference	% Identity to reference
+mecA-negative_rank1_len523_chi2140_R0.286_S0.020_UNLABELLED	erm(B)	PARTIAL_CONTIG_ENDX	59.18	100.00
+== stratified_mecA-positive.fasta
+Contig id	Element symbol	Method	% Coverage of reference	% Identity to reference
