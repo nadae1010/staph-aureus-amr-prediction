@@ -4,7 +4,7 @@ Exclusion done properly: remove what the beta-lactam models use, not just mecA.
 retrain_without_meca.py excluded the mecA block and reported +0.0168 external
 AUROC for clindamycin. That result stands, but its interpretation does not.
 Ranked by chi-square, clindamycin's strongest feature is not mecA: it is a
-258 bp element with no mecA k-mers, matching contig 2 of the methicillin and
+706 bp N-terminal mecA segment (no k-mers shared with contig 1; mecA assembles as two non-overlapping pieces), matching contig 2 of the methicillin and
 oxacillin models, carried by 68.7% of resistant and 12.8% of susceptible
 isolates (chi2 364.3, rank 1). mecA's best fragment is rank 39. The earlier
 experiment removed the second confounder and left the first in place.
@@ -17,7 +17,7 @@ them is linkage rather than mechanism. Two widths again, but anchored properly:
   loci     every k-mer among the top features of methicillin, oxacillin and
            cefoxitin -- the beta-lactam feature set entire
   phi      that, plus every k-mer correlating above PHI with carriage of
-           either mecA or the 258 bp element, which catches sequence that
+           either mecA or the N-terminal mecA segment, which catches sequence that
            travels with the cassette without being selected for it
 
 Erythromycin is refit identically as the control. Its determinant is erm(C),
@@ -80,7 +80,7 @@ for abx in BETA_LACTAMS:
 print(f"beta-lactam feature set: {int(bl.sum()):,} k-mers\n", flush=True)
 
 # ------------------------------- the two loci whose carriage anchors the phi cut
-LOCI = {"mecA": ("methicillin", "1"), "element258": ("methicillin", "2")}
+LOCI = {"mecA": ("methicillin", "1"), "element258": ("methicillin", "2")} # "element258" is a legacy name: this is the N-terminal mecA segment (706 bp)
 loci_cols = {}
 want = {}
 with open(f"{BASE}/interpret2/contigs_all.tsv") as f:
