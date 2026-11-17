@@ -215,7 +215,7 @@ def counts(rs):
 
 
 def chi_from(a, b, pR):
-    """AURA's carrier-conditioned chi-square from carrier counts."""
+    ""Carrier-only chi-square from carrier counts (the score chi2_rank.py uses)."""
     tot = a + b
     eR, eS = pR * tot, (1 - pR) * tot
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -232,7 +232,7 @@ def chi2_carrier(rs, ys):
 chi = chi2_carrier(rows, y)
 rank = np.argsort(np.argsort(-chi))
 print(f"\n  pooled clindamycin ranking (all {len(rows)} labelled genomes, "
-      f"AURA chi-square):")
+      f"carrier-only chi-square):")
 for name in ORDER:
     cc = np.array(list(resolved[name].values()), dtype=np.int64)
     best = cc[np.argmax(chi[cc])]
