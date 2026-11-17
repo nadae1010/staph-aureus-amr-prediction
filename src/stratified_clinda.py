@@ -170,7 +170,7 @@ def counts(rs):
 
 
 def chi2_carrier(rs, ys):
-    """AURA's statistic: carriers only."""
+    """Carrier-only chi-square, as in chi2_rank.py."""
     a, b = counts(rs[ys == 1]), counts(rs[ys == 0])
     tot, pR = a + b, float((ys == 1).mean())
     eR, eS = pR * tot, (1 - pR) * tot
