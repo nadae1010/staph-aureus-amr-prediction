@@ -1,0 +1,97 @@
+mecA (C-term)    2,799 matrix columns
+mecA (N-term)      676 matrix columns
+erm(C)           2,473 matrix columns
+
+mecA carriers (either contig): 2,959/4610
+  mecA-negative  n=  913  R= 147  S= 766
+  mecA-positive  n=  894  R= 683  S= 211
+
+lineage groups: 394 clusters (column 'cluster', aligned by column 'matrix_row')
+
+==========================================================================
+mecA-negative: ranking
+  erm(C): chi2 71.5, rank 18,456, carried by 27.2% of R / 5.0% of S in this stratum
+
+==========================================================================
+mecA-positive: ranking
+  erm(C): chi2 28.2, rank 752,422, carried by 35.9% of R / 12.8% of S in this stratum
+
+  mecA-negative: top 2,000 features -> 480 contigs
+    #     bp    chi2    rank      R      S  matches
+    1    523   139.9      51 28.6%  2.0%  UNLABELLED
+    2    388   133.6     676 29.3%  2.3%  UNLABELLED
+    3    292   133.6     601 29.3%  2.3%  UNLABELLED
+    4    106   133.6     423 29.3%  2.3%  UNLABELLED
+    5     47   133.6     432 29.3%  2.3%  UNLABELLED
+    6     62   129.0   1,350 28.6%  2.3%  UNLABELLED
+    7    114   129.0   1,226 28.6%  2.3%  UNLABELLED
+    8     74   129.0     890 28.6%  2.3%  UNLABELLED
+    9     33   127.9   1,405 27.9%  2.2%  UNLABELLED
+   10     31   127.9   1,427 27.9%  2.2%  UNLABELLED
+   11     31   127.9   1,917 27.9%  2.2%  UNLABELLED
+   12     35   127.9   1,670 27.9%  2.2%  UNLABELLED
+   13     31   127.9   1,578 27.9%  2.2%  UNLABELLED
+   14     31   127.9   1,714 27.9%  2.2%  UNLABELLED
+   15     31   127.9   1,444 27.9%  2.2%  UNLABELLED
+  wrote /blue/boucher/nelseifi/interpret2/stratified_mecA-negative.fasta
+
+  mecA-positive: top 2,000 features -> 112 contigs
+    #     bp    chi2    rank      R      S  matches
+    1    102   220.7      12  3.5% 46.9%  UNLABELLED
+    2     62   219.0      41  2.9% 44.5%  UNLABELLED
+    3     51   217.7      58  3.5% 46.4%  UNLABELLED
+    4     73   214.7      62  3.5% 46.0%  UNLABELLED
+    5     47   213.9      70  5.3% 51.7%  UNLABELLED
+    6     36   211.9      72  3.4% 45.0%  UNLABELLED
+    7     38   211.7      74  3.5% 45.5%  UNLABELLED
+    8     55   211.0      77  4.1% 47.4%  UNLABELLED
+    9     39   210.6     109  2.6% 42.2%  UNLABELLED
+   10     93   208.3     139  3.8% 46.0%  UNLABELLED
+   11     61   208.0     162  4.2% 47.4%  UNLABELLED
+   12     32   208.0     167  4.2% 47.4%  UNLABELLED
+   13     31   207.9     180  4.4% 47.9%  UNLABELLED
+   14     47   206.1     202  3.2% 43.6%  UNLABELLED
+   15     41   202.9     220  3.4% 43.6%  UNLABELLED
+  wrote /blue/boucher/nelseifi/interpret2/stratified_mecA-positive.fasta
+
+==========================================================================
+within-stratum CV (5-fold, lineage-grouped, 3 seeds, selection refit inside each fold)
+  mecA-negative seed 0 fold 0: k=5,000 0.5455  k=50,000 0.7592
+  mecA-negative seed 0 fold 1: k=5,000 0.5026  k=50,000 0.7677
+  mecA-negative seed 0 fold 2: k=5,000 0.6298  k=50,000 0.8455
+  mecA-negative seed 0 fold 3: k=5,000 0.8020  k=50,000 0.8218
+  mecA-negative seed 0 fold 4: k=5,000 0.6614  k=50,000 0.7689
+  mecA-negative seed 1 fold 0: k=5,000 0.6142  k=50,000 0.8410
+  mecA-negative seed 1 fold 1: k=5,000 0.4427  k=50,000 0.7226
+  mecA-negative seed 1 fold 2: k=5,000 0.6921  k=50,000 0.6983
+  mecA-negative seed 1 fold 3: k=5,000 0.7212  k=50,000 0.8225
+  mecA-negative seed 1 fold 4: k=5,000 0.5185  k=50,000 0.7860
+  mecA-negative seed 2 fold 0: k=5,000 0.5309  k=50,000 0.6239
+  mecA-negative seed 2 fold 1: k=5,000 0.6611  k=50,000 0.7593
+  mecA-negative seed 2 fold 2: k=5,000 0.5174  k=50,000 0.7793
+  mecA-negative seed 2 fold 3: k=5,000 0.8279  k=50,000 0.8061
+  mecA-negative seed 2 fold 4: k=5,000 0.6540  k=50,000 0.8190
+  mecA-positive seed 0 fold 0: k=5,000 0.7242  k=50,000 0.9703
+  mecA-positive seed 0 fold 1: k=5,000 0.4979  k=50,000 0.4811
+  mecA-positive seed 0 fold 2: k=5,000 0.0000  k=50,000 0.0000
+  mecA-positive seed 0 fold 3: k=5,000 0.7899  k=50,000 0.6955
+  mecA-positive seed 0 fold 4: k=5,000 0.4814  k=50,000 0.5306
+  mecA-positive seed 1 fold 0: k=5,000 0.5337  k=50,000 0.6111
+  mecA-positive seed 1 fold 1: k=5,000 0.8274  k=50,000 0.7459
+  mecA-positive seed 1 fold 3: k=5,000 0.7704  k=50,000 0.8154
+  mecA-positive seed 1 fold 4: k=5,000 0.4607  k=50,000 0.4767
+  mecA-positive seed 2 fold 0: k=5,000 0.5986  k=50,000 0.5846
+  mecA-positive seed 2 fold 1: k=5,000 0.5127  k=50,000 0.5182
+  mecA-positive seed 2 fold 2: k=5,000 0.5000  k=50,000 0.5000
+  mecA-positive seed 2 fold 3: k=5,000 0.5667  k=50,000 0.5787
+  mecA-positive seed 2 fold 4: k=5,000 0.7971  k=50,000 0.6851
+
+==========================================================================
+summary: within-stratum AUROC (mean +/- sd over folds x seeds)
+
+  mecA-negative  k= 5,000  0.6214 +/- 0.1121  (n=15)
+  mecA-negative  k=50,000  0.7747 +/- 0.0591  (n=15)
+  mecA-positive  k= 5,000  0.5758 +/- 0.2130  (n=14)
+  mecA-positive  k=50,000  0.5852 +/- 0.2201  (n=14)
+
+pre-registered rule (mecA-negative mean >= 0.80 at either k): best 0.7747 -> FAIL: report clindamycin as not adequately predictable without lineage markers

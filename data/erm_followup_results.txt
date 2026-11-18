@@ -1,0 +1,123 @@
+erm(B)             523 bp
+erm(C)           2,503 bp
+mecA (C-term)    2,829 bp
+mecA (N-term)      706 bp
+  erm(B)            493 k-mers in matrix, 24 sampled
+  erm(C)          2,473 k-mers in matrix, 24 sampled
+  mecA (C-term)   2,799 k-mers in matrix, 24 sampled
+  mecA (N-term)     676 k-mers in matrix, 24 sampled
+
+training carriers of 4610: erm(B) 240, erm(C) 925, mecA (C-term) 2959, mecA (N-term) 2959, mecA either 2959
+
+============================================================================
+TRAINING (BV-BRC)
+
+  clindamycin  (R=830, S=977)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)           180/830  21.7%   29/977   3.0%      8.9  [6.0, 13.3]
+    erm(C)           245/830  29.5%   77/977   7.9%      4.9  [3.7, 6.4]
+    mecA (C-term)    683/830  82.3%  211/977  21.6%     16.8  [13.3, 21.2]
+    mecA (N-term)    683/830  82.3%  211/977  21.6%     16.8  [13.3, 21.2]
+
+  all clindamycin-labelled: resistant genomes by erm gene (n=830)
+    erm(B) only  177   erm(C) only  242   both    3   neither  408
+    covered by either: 50.8%   unexplained: 49.2%
+
+  mecA-negative: resistant genomes by erm gene (n=147)
+    erm(B) only   41   erm(C) only   36   both    1   neither   69
+    covered by either: 53.1%   unexplained: 46.9%
+
+  mecA-positive: resistant genomes by erm gene (n=683)
+    erm(B) only  136   erm(C) only  206   both    2   neither  339
+    covered by either: 50.4%   unexplained: 49.6%
+
+  erythromycin  (R=1359, S=1728)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)           196/1359 14.4%   16/1728  0.9%     17.5  [10.5, 29.1]
+    erm(C)           568/1359 41.8%   41/1728  2.4%     29.2  [21.1, 40.5]
+    mecA (C-term)   1124/1359 82.7%  529/1728 30.6%     10.8  [9.1, 12.9]
+    mecA (N-term)   1124/1359 82.7%  529/1728 30.6%     10.8  [9.1, 12.9]
+
+  pooled clindamycin ranking (all 1807 labelled genomes, AURA chi-square):
+    erm(B)          best k-mer chi2   137.0  rank   219,559
+    erm(C)          best k-mer chi2   178.7  rank    33,112
+    mecA (C-term)   best k-mer chi2   350.0  rank        45
+    mecA (N-term)   best k-mer chi2   364.3  rank         2
+
+============================================================================
+CLINDAMYCIN vs ERYTHROMYCIN PHENOTYPES (training)
+  genomes labelled for both: 1801
+    clinda R / ery R:   816    clinda R / ery S:    12
+    clinda S / ery R:   134    clinda S / ery S:   839
+  clinda-R / ery-S (n=12): erm(B) 0, erm(C) 0, mecA 8
+  clinda-S / ery-R (n=134): erm(B) 12, erm(C) 40, mecA 77
+  clinda-R/ery-S group below 15; not ranked
+
+============================================================================
+EXTERNAL (NCBI): scanning 1235 assemblies
+  [1/1235]
+  [201/1235]
+  [401/1235]
+  [601/1235]
+  [801/1235]
+  [1001/1235]
+  [1201/1235]
+
+  clindamycin, all matched  (R=360, S=833)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)             8/360   2.2%    0/833   0.0%     40.2  [2.3, 698.4]
+    erm(C)            81/360  22.5%    1/833   0.1%    161.8  [32.0, 818.3]
+    mecA (C-term)    141/360  39.2%  254/833  30.5%      1.5  [1.1, 1.9]
+    mecA (N-term)    141/360  39.2%  254/833  30.5%      1.5  [1.1, 1.9]
+
+  clindamycin, all matched: resistant genomes by erm gene (n=360)
+    erm(B) only    8   erm(C) only   81   both    0   neither  271
+    covered by either: 24.7%   unexplained: 75.3%
+
+  clindamycin, all matched, mecA-negative: resistant genomes by erm gene (n=219)
+    erm(B) only    3   erm(C) only   28   both    0   neither  188
+    covered by either: 14.2%   unexplained: 85.8%
+
+  erythromycin, all matched  (R=504, S=699)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)             8/504   1.6%    0/699   0.0%     24.0  [1.4, 415.9]
+    erm(C)            83/504  16.5%    0/699   0.0%    277.1  [17.1, 4479.7]
+    mecA (C-term)    232/504  46.0%  156/699  22.3%      3.0  [2.3, 3.8]
+    mecA (N-term)    232/504  46.0%  156/699  22.3%      3.0  [2.3, 3.8]
+
+  clindamycin, deduplicated  (R=333, S=776)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)             8/333   2.4%    0/776   0.0%     40.6  [2.3, 704.7]
+    erm(C)            76/333  22.8%    0/776   0.0%    461.4  [28.5, 7470.3]
+    mecA (C-term)    122/333  36.6%  213/776  27.4%      1.5  [1.2, 2.0]
+    mecA (N-term)    122/333  36.6%  213/776  27.4%      1.5  [1.2, 2.0]
+
+  clindamycin, deduplicated: resistant genomes by erm gene (n=333)
+    erm(B) only    8   erm(C) only   76   both    0   neither  249
+    covered by either: 25.2%   unexplained: 74.8%
+
+  clindamycin, deduplicated, mecA-negative: resistant genomes by erm gene (n=211)
+    erm(B) only    3   erm(C) only   28   both    0   neither  180
+    covered by either: 14.7%   unexplained: 85.3%
+
+  erythromycin, deduplicated  (R=458, S=660)
+    locus                  R carry        S carry       OR  95% CI
+    erm(B)             8/458   1.7%    0/660   0.0%     24.9  [1.4, 432.9]
+    erm(C)            78/458  17.0%    0/660   0.0%    272.5  [16.8, 4408.5]
+    mecA (C-term)    196/458  42.8%  134/660  20.3%      2.9  [2.2, 3.8]
+    mecA (N-term)    196/458  42.8%  134/660  20.3%      2.9  [2.2, 3.8]
+
+  external clinda-R / ery-S (deduplicated): 2 of 1090 with both labels; erm(B) 0, erm(C) 0
+
+============================================================================
+SUMMARY: clindamycin odds ratio, training -> external
+
+  locus                     training       external (all)     external (dedup)
+  erm(B)              8.9 [6.0,13.3]      40.2 [2.3,698.4]      40.6 [2.3,704.7]
+  erm(C)               4.9 [3.7,6.4]     161.8 [32.0,818.3]     461.4 [28.5,7470.3]
+  mecA (C-term)      16.8 [13.3,21.2]        1.5 [1.1,1.9]        1.5 [1.2,2.0]
+  mecA (N-term)      16.8 [13.3,21.2]        1.5 [1.1,1.9]        1.5 [1.2,2.0]
+
+  sanity: mecA (C-term) should read ~16.8 -> ~1.5 and erm(C) ~4.9 -> ~162 (training -> external all, as reported by linkage_external.py)
+
+  pre-stated prediction for erm(B): external clindamycin OR CI excludes 1 -> consistent with causal (external CI excludes 1)
