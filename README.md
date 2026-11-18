@@ -30,7 +30,7 @@ The cleaned phenotype matrix contains one row per genome:
 3. `Strain Name`
 4. One phenotype column per antibiotic (`Resistant`, `Susceptible`, or `None`)
 
-4,944 unique genomes met the phenotype criteria. Of these, **4,610 genome assemblies were successfully retrieved**; 334 could not be recovered from BV-BRC and are listed in `data/missing_ids.txt`. All modeling uses the 4,610 available genomes.
+4,944 unique genomes met the phenotype criteria. Of these, **4,610 genome assemblies were successfully retrieved**; 4,944 unique genomes met the phenotype criteria. Of these, **4,610 were modeled**. The other 334 all have BV-BRC IDs ending in zero, which lost their trailing zeros during table processing (e.g. `1280.10000` → `1280.1`), so their assemblies were never retrieved. They are listed in `data/missing_ids.txt`; no retained genome was mislabeled. 
 
 Per-antibiotic counts on the modeled set:
 
